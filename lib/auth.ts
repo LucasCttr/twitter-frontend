@@ -49,27 +49,33 @@ export const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials) return null;
-        const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: credentials.email, password: credentials.password }),
-        });
-        const data = await res.json();
-        if (!res.ok) return null;
+        try {
+          const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: credentials.email, password: credentials.password }),
+          });
+          const data = await res.json();
+          if (!res.ok) return null;
 
-        // Expect backend to return { token, refreshToken, user }
-        const accessToken = data.token ?? data.accessToken ?? null;
-        const refreshToken = data.refreshToken ?? data.refresh_token ?? null;
-        const user = data.user ?? null;
-        if (!accessToken) return null;
+          // Expect backend to return { token, refreshToken, user }
+          const accessToken = data.token ?? data.accessToken ?? null;
+          const refreshToken = data.refreshToken ?? data.refresh_token ?? null;
+          const user = data.user ?? null;
+          if (!accessToken) return null;
 
-        return { accessToken, refreshToken, id: user?.id ?? null, name: user?.name ?? user?.username ?? null };
+          return { accessToken, refreshToken, id: user?.id ?? null, name: user?.name ?? user?.username ?? null };
+        } catch (err) {
+          // Network or other fetch error — log and fail authentication gracefully
+          console.error("NextAuth authorize error:", err);
+          return null;
+        }
       },
     }),
   ],
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user?: any }) {
       // Initial sign in
       if (user) {
         token.accessToken = (user as any).accessToken ?? (user as any).accessToken ?? (user as any).accessToken;
@@ -96,13 +102,13 @@ export const authOptions = {
       // Unable to refresh, return token as-is (will be unauthenticated)
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       (session as any).accessToken = token.accessToken;
       (session.user as any).id = token.id;
       return session;
     },
   },
-  pages: { signIn: "/auth/login" },
+  pages: { signIn: "/auth/login", error: "/auth/login" },
 };
 
 export default authOptions;

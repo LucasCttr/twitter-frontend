@@ -12,14 +12,14 @@ export default function TweetCard({ tweet }: { tweet: Tweet }) {
   return (
     <article className="border-b py-4">
       <div className="flex items-start gap-3">
-        <div className="h-10 w-10 rounded-full bg-zinc-200" />
+        <div className="h-10 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700" />
         <div className="flex-1">
-          <div className="flex items-center gap-2 text-sm text-zinc-700">
+          <div className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
             <strong>{tweet.author?.name ?? "Unknown"}</strong>
-            <span className="text-xs text-zinc-500">@{tweet.author?.username ?? tweet.author?.id ?? "anon"}</span>
-            <span className="text-xs text-zinc-400">• {tweet.createdAt ?? "now"}</span>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">@{tweet.author?.username ?? tweet.author?.id ?? "anon"}</span>
+            <span className="text-xs text-zinc-400 dark:text-zinc-500">• {tweet.createdAt ?? "now"}</span>
           </div>
-          <p className="mt-2 text-base text-zinc-900">{tweet.text}</p>
+          <p className="mt-2 text-base text-zinc-900 dark:text-zinc-100">{tweet.text}</p>
         </div>
       </div>
     </article>

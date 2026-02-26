@@ -2,6 +2,9 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import Card from "@/components/ui/card";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,25 +20,30 @@ export default function LoginPage() {
       setError(res.error);
       return;
     }
-    // success
     router.push("/");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleSubmit} className="w-full max-w-md p-6 border rounded">
+    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 p-6">
+      <Card className="w-full max-w-md">
         <h1 className="text-2xl mb-4">Iniciar sesión</h1>
         {error && <div className="mb-3 text-red-600">{error}</div>}
-        <label className="block mb-2">
-          <span>Email</span>
-          <input className="mt-1 block w-full" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </label>
-        <label className="block mb-4">
-          <span>Contraseña</span>
-          <input type="password" className="mt-1 block w-full" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </label>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded" type="submit">Entrar</button>
-      </form>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <label className="block">
+            <span className="text-sm">Email</span>
+            <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+          </label>
+
+          <label className="block">
+            <span className="text-sm">Contraseña</span>
+            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </label>
+
+          <div className="flex justify-end">
+            <Button type="submit">Entrar</Button>
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }

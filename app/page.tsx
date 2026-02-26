@@ -24,16 +24,22 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-50 py-8">
-      <main className="mx-auto w-full max-w-2xl rounded bg-white p-6">
-        <h1 className="text-2xl font-semibold mb-4">Timeline</h1>
-        {loading && <div>Loading…</div>}
-        {error && <div className="text-red-600">{error}</div>}
-        {!loading && !tweets.length && <div>No tweets yet.</div>}
-        <div className="divide-y">
-          {tweets.map((t) => (
-            <TweetCard key={t.id} tweet={t} />
-          ))}
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 py-8">
+      <main className="mx-auto w-full max-w-2xl p-6">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-semibold">Timeline</h1>
+          </div>
+
+          {loading && <div>Loading…</div>}
+          {error && <div className="text-red-600">{error}</div>}
+          {!loading && !tweets.length && <div>No tweets yet.</div>}
+
+          <div className="space-y-2">
+            {tweets.map((t) => (
+              <TweetCard key={t.id} tweet={t} />
+            ))}
+          </div>
         </div>
       </main>
     </div>

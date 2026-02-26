@@ -6,8 +6,9 @@ export async function fetchTweetsClient() {
 
 // Server-side helper for app routes or server components
 import { getToken } from "next-auth/jwt";
+import { NextRequest } from "next/server";
 
-export async function serverFetch(path: string, req: Request) {
+export async function serverFetch(path: string, req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const accessToken = (token as any)?.accessToken;
   const url = `${process.env.BACKEND_URL}${path}`;
