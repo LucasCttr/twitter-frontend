@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Card from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -24,26 +24,34 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 p-6">
-      <Card className="w-full max-w-md">
-        <h1 className="text-2xl mb-4">Iniciar sesión</h1>
-        {error && <div className="mb-3 text-red-600">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <label className="block">
-            <span className="text-sm">Email</span>
-            <Input value={email} onChange={(e) => setEmail(e.target.value)} />
-          </label>
+  <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 p-6">
+    <Card className="w-full max-w-md p-6">
+      <h1 className="text-2xl font-bold mb-6">Iniciar sesión</h1>
+      {error && <div className="mb-3 text-red-600 text-sm">{error}</div>}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-1">
+          <label className="text-sm font-medium">Email</label>
+          <Input 
+            type="email"
+            placeholder="tucorreo@ejemplo.com"
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+          />
+        </div>
 
-          <label className="block">
-            <span className="text-sm">Contraseña</span>
-            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          </label>
+        <div className="space-y-1">
+          <label className="text-sm font-medium">Contraseña</label>
+          <Input 
+            type="password"
+            placeholder="••••••••"
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+          />
+        </div>
 
-          <div className="flex justify-end">
-            <Button type="submit">Entrar</Button>
-          </div>
-        </form>
-      </Card>
-    </div>
-  );
+        <Button type="submit" className="w-full">Entrar</Button>
+      </form>
+    </Card>
+  </div>
+);
 }
