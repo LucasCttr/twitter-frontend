@@ -46,5 +46,5 @@ export function useInfiniteFeed(initialTweets: Tweet[] = [], initialCursor?: str
     return () => observer.current?.disconnect();
   }, [fetchMore, hasMore, loading]);
 
-  return { tweets, loading, hasMore, loadMoreRef };
+  return { tweets, loading, hasMore, loadMoreRef, setTweets };
 }

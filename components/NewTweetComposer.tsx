@@ -4,7 +4,11 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export default function NewTweetComposer() {
+type NewTweetComposerProps = {
+  onTweetCreated?: (tweet: any) => void;
+};
+
+export default function NewTweetComposer({ onTweetCreated }: NewTweetComposerProps) {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,8 +31,13 @@ export default function NewTweetComposer() {
         throw new Error(`Failed to post: ${res.status} ${body}`);
       }
       setContent("");
-      // refresh server components to show new tweet
-      router.refresh();
+      const tweet = await res.json().catch(() => null);
+      if (tweet && onTweetCreated) {
+        onTweetCreated(tweet);
+      } else {
+        // fallback: refresh server components to show new tweet
+        router.refresh();
+      }
     } catch (err: any) {
       setError(err?.message ?? String(err));
     } finally {

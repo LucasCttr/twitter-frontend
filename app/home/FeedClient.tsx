@@ -5,12 +5,17 @@ import NewTweetComposer from "@/components/NewTweetComposer";
 import type { Tweet } from "@/types/tweet";
 
 export default function FeedClient({ initialTweets, initialCursor }: { initialTweets: Tweet[]; initialCursor?: string | null }) {
-  const { tweets, loading, hasMore, loadMoreRef } = useInfiniteFeed(initialTweets, initialCursor);
+  const { tweets, loading, hasMore, loadMoreRef, setTweets } = useInfiniteFeed(initialTweets, initialCursor);
+
+  // Callback para agregar el nuevo tweet al inicio del feed
+  const handleNewTweet = (tweet: Tweet) => {
+    setTweets((prev: Tweet[]) => [tweet, ...prev]);
+  };
 
   return (
     <main className="max-w-2xl mx-auto p-4">
       <section className="divide-y rounded-md overflow-hidden border">
-        <NewTweetComposer />
+        <NewTweetComposer onTweetCreated={handleNewTweet} />
         {tweets.length === 0 ? (
           <div className="p-6 text-center text-sm text-zinc-500">No tweets yet</div>
         ) : (
