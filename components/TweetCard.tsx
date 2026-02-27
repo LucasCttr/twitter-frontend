@@ -50,30 +50,30 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
         <div className="h-10 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700" />
         <div className="flex-1">
 
-          <div className="mt-0.5 mb-1 flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300" style={{marginTop: '-1px'}}>
+          <div className="mt-0.5 mb-1 flex items-center gap-2 text-base text-zinc-700 dark:text-zinc-300" style={{marginTop: '-3px'}}>
             <strong>{tweet.author?.name ?? "Unknown"}</strong>
             {(() => {
               const email = (tweet as any).author?.email;
               const name = (tweet as any).author?.name;
               const id = (tweet as any).author?.id;
               const handle = email
-                ? String(email).split("@")[0]
+                ? String(email).split("@") [0]
                 : name
                 ? String(name).replace(/\s+/g, "").toLowerCase()
                 : id
                 ? String(id).slice(0, 8)
                 : "anon";
-              return <span className="text-xs text-zinc-500 dark:text-zinc-400">@{handle}</span>;
+              return <span className="text-sm text-zinc-500 dark:text-zinc-400">@{handle}</span>;
             })()}
           </div>
-          {currentRetweet && !isNested && (
-            <div className="mb-2 text-[13px] text-blue-500 dark:text-blue-400 flex items-center gap-2">
+              {currentRetweet && !isNested && (
+                <div className="mb-2 text-[13px] text-blue-500 dark:text-blue-400 flex items-center gap-2" style={{marginTop: '-4px'}}>
               <span>🔁</span>
               <span>{tweet.author?.name ?? "Someone"} retweeted</span>
             </div>
           )}
-          {!currentRetweet && tweet.parentId && !isNested && (
-            <div className="mb-2 text-[13px] text-blue-500 dark:text-blue-400 flex items-center gap-2">
+              {!currentRetweet && tweet.parentId && !isNested && (
+                <div className="mb-2 text-[13px] text-blue-500 dark:text-blue-400 flex items-center gap-2" style={{marginTop: '-4px'}}>
               <span>💬</span>
               <span>{tweet.author?.name ?? "Someone"} replied</span>
             </div>
@@ -85,7 +85,7 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
               return (
                 <>
                   {retweeterText && (
-                    <p className="mt-2 text-sm text-zinc-900 dark:text-zinc-100">{retweeterText}</p>
+                    <p className="mt-05 text-sm text-zinc-900 dark:text-zinc-100">{retweeterText}</p>
                   )}
                   <div className="mt-3 rounded-md border bg-zinc-50 dark:bg-zinc-800 p-3">
                     <div className="flex items-start gap-3">
@@ -111,7 +111,7 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
               );
             }
             // Fallback: show retweeter content (if any)
-            return <p className="mt-2 text-sm text-zinc-900 dark:text-zinc-100">{tweet.content ?? tweet.text ?? ""}</p>;
+            return <p className="mt-0.5 text-sm text-zinc-900 dark:text-zinc-100">{tweet.content ?? tweet.text ?? ""}</p>;
           })()}
 
           <div className="mt-3 flex items-center justify-between text-sm text-zinc-500">
