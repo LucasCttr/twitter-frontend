@@ -8,10 +8,24 @@ export async function GET(req: NextRequest) {
   if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   const accessToken = (token as any).accessToken;
-  const backendRes = await fetch(`${process.env.BACKEND_URL}/tweets`, {
+  // Obtener los parámetros de la query string
+  const { searchParams } = new URL(req.url);
+  const cursor = searchParams.get("cursor");
+  const take = searchParams.get("take");
+  // Construir la URL del backend con los parámetros
+  const backendUrl = new URL(`${process.env.BACKEND_URL}/feed`);
+  if (cursor) backendUrl.searchParams.set("cursor", cursor);
+  if (take) backendUrl.searchParams.set("take", take);
+
+  const backendRes = await fetch(backendUrl.toString(), {
     headers: { Authorization: accessToken ? `Bearer ${accessToken}` : '' },
   });
-  const data = await backendRes.json();
+  let data;
+  try {
+    data = await backendRes.json();
+  } catch (e) {
+    data = null;
+  }
   return NextResponse.json(data, { status: backendRes.status });
 }
 
