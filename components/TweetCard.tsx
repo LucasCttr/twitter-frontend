@@ -49,14 +49,8 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
       <div className="flex items-start gap-3">
         <div className="h-10 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700" />
         <div className="flex-1">
-          {currentRetweet && !isNested && (
-            <div className="mb-2 text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
-              <span>🔁</span>
-              <span>{tweet.author?.name ?? "Someone"} retweeted</span>
-            </div>
-          )}
 
-          <div className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+          <div className="mt-0.5 mb-1 flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300" style={{marginTop: '-1px'}}>
             <strong>{tweet.author?.name ?? "Unknown"}</strong>
             {(() => {
               const email = (tweet as any).author?.email;
@@ -72,6 +66,18 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
               return <span className="text-xs text-zinc-500 dark:text-zinc-400">@{handle}</span>;
             })()}
           </div>
+          {currentRetweet && !isNested && (
+            <div className="mb-2 text-[13px] text-blue-500 dark:text-blue-400 flex items-center gap-2">
+              <span>🔁</span>
+              <span>{tweet.author?.name ?? "Someone"} retweeted</span>
+            </div>
+          )}
+          {!currentRetweet && tweet.parentId && !isNested && (
+            <div className="mb-2 text-[13px] text-blue-500 dark:text-blue-400 flex items-center gap-2">
+              <span>💬</span>
+              <span>{tweet.author?.name ?? "Someone"} replied</span>
+            </div>
+          )}
 
           {(() => {
             const retweeterText = tweet.content ?? tweet.text;
@@ -79,7 +85,7 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
               return (
                 <>
                   {retweeterText && (
-                    <p className="mt-2 text-base text-zinc-900 dark:text-zinc-100">{retweeterText}</p>
+                    <p className="mt-2 text-sm text-zinc-900 dark:text-zinc-100">{retweeterText}</p>
                   )}
                   <div className="mt-3 rounded-md border bg-zinc-50 dark:bg-zinc-800 p-3">
                     <div className="flex items-start gap-3">
@@ -105,7 +111,7 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
               );
             }
             // Fallback: show retweeter content (if any)
-            return <p className="mt-2 text-base text-zinc-900 dark:text-zinc-100">{tweet.content ?? tweet.text ?? ""}</p>;
+            return <p className="mt-2 text-sm text-zinc-900 dark:text-zinc-100">{tweet.content ?? tweet.text ?? ""}</p>;
           })()}
 
           <div className="mt-3 flex items-center justify-between text-sm text-zinc-500">
