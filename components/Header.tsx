@@ -11,9 +11,22 @@ export default function Header() {
   return (
     <header className="border-b bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 p-4">
-        <Link href="/" className="text-xl font-bold">
+        <Link href="/home" className="text-xl font-bold">
           MiniTwitter
         </Link>
+
+        <nav className="flex items-center gap-3">
+          <Link href="/home" className="text-sm font-medium hover:underline">
+            Feed
+          </Link>
+          <Link href="/trending" className="text-sm font-medium hover:underline">
+            Trending
+          </Link>
+          <Link href="/profile" className="text-sm font-medium hover:underline">
+            Profile
+          </Link>
+
+        </nav>
 
         <nav className="flex items-center gap-3">
           <ThemeToggle />

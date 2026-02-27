@@ -1,8 +1,11 @@
 import TweetCard from "@/components/TweetCard";
+import NewTweetComposer from "@/components/NewTweetComposer";
+import type { FeedResponse } from "@/types/feed";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import { Tweet } from "@/types/tweet";
 
-async function getFeed() {
+async function getFeed(): Promise<Tweet[]> {
   const backend = process.env.BACKEND_URL ?? process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:3000";
   const url = `${backend.replace(/\/$/, "")}/feed`;
   try {
@@ -26,9 +29,9 @@ async function getFeed() {
       console.error(`Feed fetch failed: ${res.status} ${res.statusText}`, body);
       return [];
     }
-    const json = await res.json();
-    // Expecting { items: TweetResponseDto[] } or an array — normalize
-    const items = Array.isArray(json) ? json : json.items ?? [];
+    const json = await res.json() as FeedResponse | Tweet[];
+    // Normalize to Tweet[] whether backend returns an array or { items: Tweet[] }
+    const items = Array.isArray(json) ? (json as Tweet[]) : (json.items ?? []);
     console.log(`Feed fetched: ${items.length} items`);
     return items;
   } catch (err) {
@@ -42,8 +45,8 @@ export default async function HomeFeedPage() {
 
   return (
     <main className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-semibold mb-4">Feed</h1>
       <section className="divide-y rounded-md overflow-hidden border">
+        <NewTweetComposer />
         {items.length === 0 ? (
           <div className="p-6 text-center text-sm text-zinc-500">No tweets yet</div>
         ) : (
@@ -53,11 +56,13 @@ export default async function HomeFeedPage() {
               tweet={{
                 id: t.id,
                 text: t.content ?? t.text ?? "",
-                  author: { id: t.author?.id, name: t.author?.name, email: t.author?.email },
-                  likesCount: t.likesCount ?? t._count?.likes,
-                  retweetsCount: t.retweetsCount ?? t._count?.retweets,
-                  repliesCount: t.repliesCount ?? t._count?.replies,
+                author: { id: t.author?.id, name: t.author?.name, email: t.author?.email },
+                likesCount: t.likesCount ?? t._count?.likes,
+                retweetsCount: t.retweetsCount ?? t._count?.retweets,
+                repliesCount: t.repliesCount ?? t._count?.replies,
                 createdAt: t.createdAt ? new Date(t.createdAt).toLocaleString() : undefined,
+                retweetOfId: t.retweetOfId ?? null,
+                retweetOf: t.retweetOf ?? null,
               }}
             />
           ))
