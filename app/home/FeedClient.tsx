@@ -20,7 +20,7 @@ export default function FeedClient({ initialTweets, initialCursor }: { initialTw
           <div className="p-6 text-center text-sm text-zinc-500">No tweets yet</div>
         ) : (
           tweets.map((t) => (
-            <TweetCard key={t.id} tweet={t} />
+            <TweetCard key={t.id} tweet={t} onRetweet={handleNewTweet} />
           ))
         )}
         <div ref={loadMoreRef} />

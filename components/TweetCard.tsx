@@ -3,24 +3,34 @@
 import React, { useEffect, useState } from "react";
 import type { Tweet } from "@/types/tweet";
 
-export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: number }) {
-  const [resolved, setResolved] = useState<Tweet | null | undefined>(
-    tweet.retweetOf ?? undefined
-  );
+type TweetCardProps = {
+  tweet: Tweet;
+  depth?: number;
+  onRetweet?: (tweet: Tweet) => void;
+};
+
+export default function TweetCard({ tweet, depth = 0, onRetweet }: TweetCardProps) {
+  const [localTweet, setLocalTweet] = useState<Tweet>(tweet);
+  const [resolved, setResolved] = useState<Tweet | null | undefined>(tweet.retweetOf ?? undefined);
+
+  useEffect(() => {
+    setLocalTweet(tweet);
+  }, [tweet]);
+  // Removed duplicate declaration of resolved and setResolved
 
   useEffect(() => {
     let mounted = true;
     async function resolveRetweet() {
-      if (tweet.retweetOf) {
-        if (mounted) setResolved(tweet.retweetOf);
+      if (localTweet.retweetOf) {
+        if (mounted) setResolved(localTweet.retweetOf);
         return;
       }
-      if (!tweet.retweetOfId) {
+      if (!localTweet.retweetOfId) {
         if (mounted) setResolved(null);
         return;
       }
       try {
-        const res = await fetch(`/api/proxy/tweets/${encodeURIComponent(tweet.retweetOfId)}`, {
+        const res = await fetch(`/api/proxy/tweets/${encodeURIComponent(localTweet.retweetOfId)}`, {
           credentials: "same-origin",
         });
         if (!mounted) return;
@@ -39,7 +49,60 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
     return () => {
       mounted = false;
     };
-  }, [tweet.retweetOf, tweet.retweetOfId]);
+  }, [localTweet.retweetOf, localTweet.retweetOfId]);
+
+  // Like/Retweet handlers
+  async function handleLike() {
+    const endpoint = `/api/proxy/tweets/${localTweet.id}/like`;
+    const method = localTweet.likedByCurrentUser ? "DELETE" : "POST";
+    console.log(`[LIKE] ${method} ${endpoint}`);
+    try {
+      const res = await fetch(endpoint, { method, credentials: "same-origin" });
+      console.log(`[LIKE] response`, res);
+      if (res.ok) {
+        const updated = await res.json();
+        console.log(`[LIKE] updated`, updated);
+        setLocalTweet((prev) => ({ ...prev, ...updated }));
+      }
+    } catch (err) {
+      console.error(`[LIKE] error`, err);
+    }
+  }
+
+  async function handleRetweet() {
+    const endpoint = `/api/proxy/tweets/${localTweet.id}/retweet`;
+    if (!localTweet.retweetedByCurrentUser) {
+      // Crear retweet usando el endpoint correcto
+      console.log(`[RETWEET] POST ${endpoint}`);
+      try {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          credentials: "same-origin",
+        });
+        console.log(`[RETWEET] response`, res);
+        if (res.ok) {
+          const newRetweet = await res.json();
+          console.log(`[RETWEET] newRetweet`, newRetweet);
+          setLocalTweet((prev) => ({ ...prev, retweetedByCurrentUser: true, retweetsCount: (prev.retweetsCount ?? 0) + 1 }));
+          if (onRetweet && newRetweet) onRetweet(newRetweet);
+        }
+      } catch (err) {
+        console.error(`[RETWEET] error`, err);
+      }
+    } else {
+      // Eliminar el retweet
+      console.log(`[RETWEET] DELETE ${endpoint}`);
+      try {
+        const res = await fetch(endpoint, { method: "DELETE", credentials: "same-origin" });
+        console.log(`[RETWEET] response`, res);
+        if (res.ok) {
+          setLocalTweet((prev) => ({ ...prev, retweetedByCurrentUser: false, retweetsCount: (prev.retweetsCount ?? 1) - 1 }));
+        }
+      } catch (err) {
+        console.error(`[RETWEET] error`, err);
+      }
+    }
+  }
 
   const isNested = (depth ?? 0) > 0;
   const currentRetweet = resolved ?? null;
@@ -51,11 +114,11 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
         <div className="flex-1">
 
           <div className="mt-0.5 mb-1 flex items-center gap-2 text-base text-zinc-700 dark:text-zinc-300" style={{marginTop: '-3px'}}>
-            <strong>{tweet.author?.name ?? "Unknown"}</strong>
+            <strong>{localTweet.author?.name ?? "Unknown"}</strong>
             {(() => {
-              const email = (tweet as any).author?.email;
-              const name = (tweet as any).author?.name;
-              const id = (tweet as any).author?.id;
+              const email = (localTweet as any).author?.email;
+              const name = (localTweet as any).author?.name;
+              const id = (localTweet as any).author?.id;
               const handle = email
                 ? String(email).split("@") [0]
                 : name
@@ -69,18 +132,18 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
               {currentRetweet && !isNested && (
                 <div className="mb-2 text-[13px] text-blue-500 dark:text-blue-400 flex items-center gap-2" style={{marginTop: '-4px'}}>
               <span>🔁</span>
-              <span>{tweet.author?.name ?? "Someone"} retweeted</span>
+              <span>{localTweet.author?.name ?? "Someone"} retweeted</span>
             </div>
           )}
-              {!currentRetweet && tweet.parentId && !isNested && (
+              {!currentRetweet && localTweet.parentId && !isNested && (
                 <div className="mb-2 text-[13px] text-blue-500 dark:text-blue-400 flex items-center gap-2" style={{marginTop: '-4px'}}>
               <span>💬</span>
-              <span>{tweet.author?.name ?? "Someone"} replied</span>
+              <span>{localTweet.author?.name ?? "Someone"} replied</span>
             </div>
           )}
 
           {(() => {
-            const retweeterText = tweet.content ?? tweet.text;
+            const retweeterText = localTweet.content ?? localTweet.text;
             if (currentRetweet) {
               return (
                 <>
@@ -115,20 +178,28 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
               );
             }
             // Fallback: show retweeter content (if any)
-            return <p className="mt-0.5 text-sm text-zinc-900 dark:text-zinc-100">{tweet.content ?? tweet.text ?? ""}</p>;
+            return <p className="mt-0.5 text-sm text-zinc-900 dark:text-zinc-100">{localTweet.content ?? localTweet.text ?? ""}</p>;
           })()}
 
           <div className="mt-3 flex items-center justify-between text-sm text-zinc-500">
             <div className="flex items-center gap-4">
-              <span className={tweet.likedByCurrentUser ? "font-bold text-red-500" : ""}>
-                ❤️ {tweet.likesCount ?? 0}
+              <span
+                className={localTweet.likedByCurrentUser ? "font-bold text-red-500 cursor-pointer" : "cursor-pointer"}
+                onClick={handleLike}
+                title={localTweet.likedByCurrentUser ? "Quitar like" : "Dar like"}
+              >
+                ❤️ {localTweet.likesCount ?? 0}
               </span>
-              <span className={tweet.retweetedByCurrentUser ? "font-bold text-blue-500" : ""}>
-                🔁 {tweet.retweetsCount ?? 0}
+              <span
+                className={localTweet.retweetedByCurrentUser ? "font-bold text-blue-500 cursor-pointer" : "cursor-pointer"}
+                onClick={handleRetweet}
+                title={localTweet.retweetedByCurrentUser ? "Quitar retweet" : "Dar retweet"}
+              >
+                🔁 {localTweet.retweetsCount ?? 0}
               </span>
-              <span>💬 {tweet.repliesCount ?? 0}</span>
+              <span>💬 {localTweet.repliesCount ?? 0}</span>
             </div>
-            <div className="text-xs text-zinc-400 dark:text-zinc-500">{tweet.createdAt ?? "now"}</div>
+            <div className="text-xs text-zinc-400 dark:text-zinc-500">{localTweet.createdAt ?? "now"}</div>
           </div>
         </div>
       </div>
