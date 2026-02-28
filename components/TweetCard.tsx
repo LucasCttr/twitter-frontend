@@ -61,7 +61,6 @@ export default function TweetCard({ tweet, depth = 0, onRetweet }: TweetCardProp
       console.log(`[LIKE] response`, res);
       if (res.ok) {
         const updated = await res.json();
-        console.log(`[LIKE] updated`, updated);
         setLocalTweet((prev) => ({ ...prev, ...updated }));
       }
     } catch (err) {
@@ -92,11 +91,16 @@ export default function TweetCard({ tweet, depth = 0, onRetweet }: TweetCardProp
     } else {
       // Eliminar el retweet
       console.log(`[RETWEET] DELETE ${endpoint}`);
+      // Optimistic UI: desmarcar antes de la respuesta
       try {
         const res = await fetch(endpoint, { method: "DELETE", credentials: "same-origin" });
         console.log(`[RETWEET] response`, res);
         if (res.ok) {
-          setLocalTweet((prev) => ({ ...prev, retweetedByCurrentUser: false, retweetsCount: (prev.retweetsCount ?? 1) - 1 }));
+          setLocalTweet((prev) => ({
+            ...prev,
+            retweetedByCurrentUser: false,
+            retweetsCount: Math.max((prev.retweetsCount ?? 1) - 1, 0)
+          }));
         }
       } catch (err) {
         console.error(`[RETWEET] error`, err);
