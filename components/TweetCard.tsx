@@ -96,11 +96,8 @@ export default function TweetCard({ tweet, depth = 0, onRetweet }: TweetCardProp
         const res = await fetch(endpoint, { method: "DELETE", credentials: "same-origin" });
         console.log(`[RETWEET] response`, res);
         if (res.ok) {
-          setLocalTweet((prev) => ({
-            ...prev,
-            retweetedByCurrentUser: false,
-            retweetsCount: Math.max((prev.retweetsCount ?? 1) - 1, 0)
-          }));
+          const updated = await res.json();
+          setLocalTweet((prev) => ({ ...prev, ...updated }));
         }
       } catch (err) {
         console.error(`[RETWEET] error`, err);
