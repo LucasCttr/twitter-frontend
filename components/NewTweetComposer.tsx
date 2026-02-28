@@ -56,8 +56,12 @@ export default function NewTweetComposer({ onTweetCreated }: NewTweetComposerPro
       />
       <div className="mt-3 flex items-center justify-end gap-2">
         {error && <div className="text-sm text-red-600 mr-auto">{error}</div>}
-        <Button type="submit" disabled={loading || !content.trim()}>
-          {loading ? "Publicando..." : "Twittear"}
+        <Button
+          type="submit"
+          disabled={loading || !content.trim()}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md transition-colors"
+        >
+          {loading ? "Posting..." : "Post"}
         </Button>
       </div>
     </form>

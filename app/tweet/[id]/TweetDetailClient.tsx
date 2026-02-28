@@ -48,13 +48,17 @@ export default function TweetDetailClient({ tweet }: { tweet: Tweet }) {
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="Escribe un comentario..."
+              placeholder="Write a comment..."
               className="w-full min-h-[48px] resize-none rounded-md border p-2 text-base text-zinc-900 dark:text-zinc-100 bg-transparent border-zinc-200 dark:border-zinc-700"
             />
             <div className="mt-2 flex items-center justify-end gap-2">
               {error && <div className="text-sm text-red-600 mr-auto">{error}</div>}
-              <Button type="submit" disabled={loading || !comment.trim()}>
-                {loading ? "Comentando..." : "Comentar"}
+              <Button
+                type="submit"
+                disabled={loading || !comment.trim()}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md transition-colors"
+              >
+                {loading ? "Commenting..." : "Comment"}
               </Button>
             </div>
           </form>
@@ -64,7 +68,7 @@ export default function TweetDetailClient({ tweet }: { tweet: Tweet }) {
                 <TweetCard key={reply.id} tweet={reply} depth={1} />
               ))
             ) : (
-              <div className="p-4 text-center text-sm text-zinc-500">No hay comentarios</div>
+              <div className="p-4 text-center text-sm text-zinc-500">No comments yet</div>
             )}
           </div>
         </section>
