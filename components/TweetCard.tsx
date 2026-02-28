@@ -3,13 +3,17 @@
 import React, { useEffect, useState } from "react";
 import type { Tweet } from "@/types/tweet";
 
+import { useRouter } from "next/navigation";
+
 type TweetCardProps = {
   tweet: Tweet;
   depth?: number;
   onRetweet?: (tweet: Tweet) => void;
+  onShow?: (tweet: Tweet) => void;
 };
 
-export default function TweetCard({ tweet, depth = 0, onRetweet }: TweetCardProps) {
+export default function TweetCard({ tweet, depth = 0, onRetweet, onShow }: TweetCardProps) {
+    const router = useRouter();
   const [localTweet, setLocalTweet] = useState<Tweet>(tweet);
   const [resolved, setResolved] = useState<Tweet | null | undefined>(tweet.retweetOf ?? undefined);
 
@@ -108,8 +112,15 @@ export default function TweetCard({ tweet, depth = 0, onRetweet }: TweetCardProp
   const isNested = (depth ?? 0) > 0;
   const currentRetweet = resolved ?? null;
 
+  function handleShowTweet(e: React.MouseEvent) {
+    // Evitar que los botones de like/retweet disparen la navegación
+    if ((e.target as HTMLElement).closest(".tweet-actions")) return;
+    router.push(`/tweet/${localTweet.id}`);
+    if (onShow) onShow(localTweet);
+  }
+
   return (
-    <article className={`${isNested ? "p-3" : "border-b p-4"}`}>
+    <article className={`${isNested ? "p-3" : "border-b p-4"}`} onClick={handleShowTweet} style={{ cursor: "pointer" }}>
       <div className="flex items-start gap-3">
         <div className="h-10 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700" />
         <div className="flex-1">
@@ -170,7 +181,7 @@ export default function TweetCard({ tweet, depth = 0, onRetweet }: TweetCardProp
                             </span>
                             <span>💬 {currentRetweet.repliesCount ?? 0}</span>
                           </div>
-                          <span className="text-xs text-zinc-400 dark:text-zinc-500">{currentRetweet.createdAt ?? "now"}</span>
+                          <span className="text-xs text-zinc-400 dark:text-zinc-500">{currentRetweet.createdAt ?? "Fecha desconocida"}</span>
                         </div>
                       </div>
                     </div>
@@ -182,25 +193,25 @@ export default function TweetCard({ tweet, depth = 0, onRetweet }: TweetCardProp
             return <p className="mt-0.5 text-sm text-zinc-900 dark:text-zinc-100">{localTweet.content ?? localTweet.text ?? ""}</p>;
           })()}
 
-          <div className="mt-3 flex items-center justify-between text-sm text-zinc-500">
+          <div className="mt-3 flex items-center justify-between text-sm text-zinc-500 tweet-actions">
             <div className="flex items-center gap-4">
               <span
                 className={localTweet.likedByCurrentUser ? "font-bold text-red-500 cursor-pointer" : "cursor-pointer"}
-                onClick={handleLike}
+                onClick={(e) => { e.stopPropagation(); handleLike(); }}
                 title={localTweet.likedByCurrentUser ? "Quitar like" : "Dar like"}
               >
                 ❤️ {localTweet.likesCount ?? 0}
               </span>
               <span
                 className={localTweet.retweetedByCurrentUser ? "font-bold text-blue-500 cursor-pointer" : "cursor-pointer"}
-                onClick={handleRetweet}
+                onClick={(e) => { e.stopPropagation(); handleRetweet(); }}
                 title={localTweet.retweetedByCurrentUser ? "Quitar retweet" : "Dar retweet"}
               >
                 🔁 {localTweet.retweetsCount ?? 0}
               </span>
               <span>💬 {localTweet.repliesCount ?? 0}</span>
             </div>
-            <div className="text-xs text-zinc-400 dark:text-zinc-500">{localTweet.createdAt ?? "now"}</div>
+            <div className="text-xs text-zinc-400 dark:text-zinc-500">{localTweet.createdAt ?? "Fecha desconocida"}</div>
           </div>
         </div>
       </div>

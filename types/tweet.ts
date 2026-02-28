@@ -16,6 +16,8 @@ export interface TweetItem {
   retweetsCount?: number;
   repliesCount?: number;
   createdAt?: string;
+  // Agregada la propiedad replies para comentarios
+  replies?: TweetItem[];
   likedByCurrentUser?: boolean;
   retweetedByCurrentUser?: boolean;
 }

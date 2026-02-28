@@ -1,0 +1,24 @@
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+
+const PUBLIC_PATHS = ["/auth/login", "/api/auth", "/_next", "/favicon.ico", "/public"];
+
+export async function middleware(request: import("next/server").NextRequest) {
+  const { pathname } = request.nextUrl;
+  // Permitir acceso a rutas públicas
+  if (PUBLIC_PATHS.some(path => pathname.startsWith(path))) {
+    return NextResponse.next();
+  }
+
+  const token = await getToken({ req: request });
+  if (!token) {
+    const loginUrl = new URL("/auth/login", request.url);
+    loginUrl.searchParams.set("callbackUrl", request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/(.*)"]
+};
