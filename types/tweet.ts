@@ -16,6 +16,8 @@ export interface TweetItem {
   retweetsCount?: number;
   repliesCount?: number;
   createdAt?: string;
+  likedByCurrentUser?: boolean;
+  retweetedByCurrentUser?: boolean;
 }
 
 export type Tweet = TweetItem;

@@ -98,8 +98,12 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
                         <p className="mt-2 text-sm text-zinc-900 dark:text-zinc-100">{currentRetweet.content ?? currentRetweet.text ?? ""}</p>
                         <div className="mt-2 flex items-center justify-between text-xs text-zinc-500">
                           <div className="flex items-center gap-3">
-                            <span>❤️ {currentRetweet.likesCount ?? 0}</span>
-                            <span>🔁 {currentRetweet.retweetsCount ?? 0}</span>
+                            <span className={currentRetweet.likedByCurrentUser ? "font-bold text-red-500" : ""}>
+                              ❤️ {currentRetweet.likesCount ?? 0}
+                            </span>
+                            <span className={currentRetweet.retweetedByCurrentUser ? "font-bold text-blue-500" : ""}>
+                              🔁 {currentRetweet.retweetsCount ?? 0}
+                            </span>
                             <span>💬 {currentRetweet.repliesCount ?? 0}</span>
                           </div>
                           <span className="text-xs text-zinc-400 dark:text-zinc-500">{currentRetweet.createdAt ?? "now"}</span>
@@ -116,8 +120,12 @@ export default function TweetCard({ tweet, depth = 0 }: { tweet: Tweet; depth?: 
 
           <div className="mt-3 flex items-center justify-between text-sm text-zinc-500">
             <div className="flex items-center gap-4">
-              <span>❤️ {tweet.likesCount ?? 0}</span>
-              <span>🔁 {tweet.retweetsCount ?? 0}</span>
+              <span className={tweet.likedByCurrentUser ? "font-bold text-red-500" : ""}>
+                ❤️ {tweet.likesCount ?? 0}
+              </span>
+              <span className={tweet.retweetedByCurrentUser ? "font-bold text-blue-500" : ""}>
+                🔁 {tweet.retweetsCount ?? 0}
+              </span>
               <span>💬 {tweet.repliesCount ?? 0}</span>
             </div>
             <div className="text-xs text-zinc-400 dark:text-zinc-500">{tweet.createdAt ?? "now"}</div>
