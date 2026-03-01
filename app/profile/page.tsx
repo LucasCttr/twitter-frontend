@@ -17,7 +17,7 @@ type SessionType = {
 import { useEffect, useState } from "react";
 import ProfileCard from "../../components/ProfileCard";
 import TweetCard from "../../components/TweetCard";
-import { useInfiniteProfileTweets } from "@/lib/useInfiniteProfileTweets";
+import { useInfiniteProfileTweets } from "@/lib/tweets";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();

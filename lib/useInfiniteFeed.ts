@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { Tweet } from "@/types/tweet";
-import { fetchTweets } from "@/lib/tweetsClient";
+import { fetchTweets } from "@/lib/tweets";
 
 export function useInfiniteFeed(initialTweets: Tweet[] = [], initialCursor?: string | null) {
   const [tweets, setTweets] = useState<Tweet[]>(initialTweets);

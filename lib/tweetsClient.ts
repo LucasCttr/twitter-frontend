@@ -31,3 +31,10 @@ export async function fetchTweets(params: TweetsParams = {}): Promise<TweetsResp
   const nextCursor = raw?.nextCursor ?? raw?.cursor ?? raw?.meta?.nextCursor ?? raw?.next_cursor ?? null;
   return { items, nextCursor };
 }
+
+export async function fetchTweetById(id: string) {
+  if (!id) throw new Error('Missing id');
+  const res = await fetch(`/api/proxy/tweets/${encodeURIComponent(id)}`, { credentials: 'same-origin' });
+  if (!res.ok) throw new Error(`Failed to fetch tweet ${id}: ${res.status}`);
+  return res.json();
+}
