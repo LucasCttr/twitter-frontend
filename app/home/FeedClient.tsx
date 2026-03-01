@@ -18,20 +18,22 @@ export default function FeedClient({ initialTweets, initialCursor }: { initialTw
   };
 
   return (
-    <main className="max-w-2xl mx-auto p-4">
-      <section className="divide-y rounded-md overflow-hidden border">
-        <NewTweetComposer onTweetCreated={handleNewTweet} />
-        {tweets.length === 0 ? (
-          <div className="p-6 text-center text-sm text-zinc-500">No tweets yet</div>
-        ) : (
-          tweets.map((t) => (
-            <TweetCard key={t.id} tweet={t} onRetweet={handleNewTweet} />
-          ))
-        )}
-        <div ref={loadMoreRef} />
-        {loading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}
-        {!hasMore && tweets.length > 0 && <div className="p-4 text-center text-xs text-zinc-400">No more tweets</div>}
-      </section>
-    </main>
+    <div className="mx-auto max-w-3xl border-l border-r border-zinc-800 dark:border-zinc-700">
+      <main className="max-w-2xl mx-auto p-4">
+        <section className="divide-y rounded-md overflow-hidden border">
+          <NewTweetComposer onTweetCreated={handleNewTweet} />
+          {tweets.length === 0 ? (
+            <div className="p-6 text-center text-sm text-zinc-500">No tweets yet</div>
+          ) : (
+            tweets.map((t) => (
+              <TweetCard key={t.id} tweet={t} onRetweet={handleNewTweet} />
+            ))
+          )}
+          <div ref={loadMoreRef} />
+          {loading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}
+          {!hasMore && tweets.length > 0 && <div className="p-4 text-center text-xs text-zinc-400">No more tweets</div>}
+        </section>
+      </main>
+    </div>
   );
 }

@@ -93,8 +93,9 @@ export default function ProfilePage() {
   if (!profile) return null;
   return (
     <>
-      <ProfileCard profile={profile} />
-      <div className="max-w-md mx-auto mt-6">
+      <div className="mx-auto max-w-3xl border-l border-r border-zinc-800 dark:border-zinc-700">
+        <div className="max-w-2xl mx-auto p-4">
+          <ProfileCard profile={profile} />
         <div className="flex justify-center mb-4 gap-2">
           <button
             className={`px-4 py-2 rounded-t font-semibold transition border-b-2 ${selectedTab === "tweets" ? "border-blue-600 text-blue-600" : "border-transparent text-zinc-400"}`}
@@ -179,6 +180,7 @@ export default function ProfilePage() {
           )}
                 </div>
               </div>
-            </>
-          );
-        }
+        </div>
+    </>
+  );
+}
