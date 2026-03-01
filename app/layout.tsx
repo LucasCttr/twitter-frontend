@@ -24,13 +24,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Detectar si estamos en login o register
+  const isAuthPage = typeof window !== "undefined" && ["/auth/login", "/auth/register"].includes(window.location.pathname);
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <Header />
+          {!isAuthPage && <Header />}
           {children}
         </Providers>
       </body>
