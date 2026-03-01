@@ -31,7 +31,10 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
 
   const authorId = (session as SessionType)?.user?.id ?? "";
-  const { tweets, loading: tweetsLoading, hasMore, loadMoreRef } = useInfiniteProfileTweets({ authorId, type: selectedTab });
+  const { tweets, loading: tweetsLoading, hasMore, loadMoreRef, initialized: tweetsInitialized } = useInfiniteProfileTweets({ authorId, type: selectedTab });
+  const [repliesLoaded, setRepliesLoaded] = useState(false);
+  const [likesLoaded, setLikesLoaded] = useState(false);
+  const [retweetsLoaded, setRetweetsLoaded] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -72,6 +75,9 @@ export default function ProfilePage() {
       } catch (err) {
         /* Opcional: setError("Failed to fetch tweets"); */
       } finally {
+        if (type === 'reply') setRepliesLoaded(true);
+        if (type === 'like') setLikesLoaded(true);
+        if (type === 'retweet') setRetweetsLoaded(true);
         setLoading(false);
       }
     };
@@ -109,50 +115,66 @@ export default function ProfilePage() {
         </div>
           <div>
           {selectedTab === 'tweets' && (
-            tweets.length === 0 ? (
-              <div className="text-center text-zinc-500">No tweets yet</div>
+            tweetsInitialized ? (
+              tweets.length === 0 ? (
+                <div className="text-center text-zinc-500">No tweets yet</div>
+              ) : (
+                <div className="rounded-md overflow-hidden border">
+                  {tweets.map((tweet) => (
+                    <TweetCard key={tweet.id} tweet={tweet} />
+                  ))}
+                  <div ref={loadMoreRef} />
+                  {tweetsLoading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}
+                  {!hasMore && tweets.length > 0 && <div className="p-4 text-center text-xs text-zinc-400">No more tweets</div>}
+                </div>
+              )
             ) : (
-              <div className="rounded-md overflow-hidden border">
-                {tweets.map((tweet) => (
-                  <TweetCard key={tweet.id} tweet={tweet} />
-                ))}
-                <div ref={loadMoreRef} />
-                {tweetsLoading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}
-                {!hasMore && tweets.length > 0 && <div className="p-4 text-center text-xs text-zinc-400">No more tweets</div>}
-              </div>
+              <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>
             )
           )}
           {selectedTab === 'replies' && (
-            replies.length === 0 ? (
-              <div className="text-center text-zinc-500">No replies yet</div>
+            repliesLoaded ? (
+              replies.length === 0 ? (
+                <div className="text-center text-zinc-500">No replies yet</div>
+              ) : (
+                <div className="rounded-md overflow-hidden border">
+                  {replies.map((reply) => (
+                    <TweetCard key={reply.id} tweet={reply} />
+                  ))}
+                </div>
+              )
             ) : (
-              <div className="rounded-md overflow-hidden border">
-                {replies.map((reply) => (
-                  <TweetCard key={reply.id} tweet={reply} />
-                ))}
-              </div>
+              <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>
             )
           )}
           {selectedTab === 'likes' && (
-            likes.length === 0 ? (
-              <div className="text-center text-zinc-500">No likes yet</div>
+            likesLoaded ? (
+              likes.length === 0 ? (
+                <div className="text-center text-zinc-500">No likes yet</div>
+              ) : (
+                <div className="rounded-md overflow-hidden border">
+                  {likes.map((like) => (
+                    <TweetCard key={like.id} tweet={like} />
+                  ))}
+                </div>
+              )
             ) : (
-              <div className="rounded-md overflow-hidden border">
-                {likes.map((like) => (
-                  <TweetCard key={like.id} tweet={like} />
-                ))}
-              </div>
+              <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>
             )
           )}
           {selectedTab === 'retweets' && (
-            retweets.length === 0 ? (
-              <div className="text-center text-zinc-500">No retweets yet</div>
+            retweetsLoaded ? (
+              retweets.length === 0 ? (
+                <div className="text-center text-zinc-500">No retweets yet</div>
+              ) : (
+                <div className="rounded-md overflow-hidden border">
+                  {retweets.map((retweet) => (
+                    <TweetCard key={retweet.id} tweet={retweet} />
+                  ))}
+                </div>
+              )
             ) : (
-              <div className="rounded-md overflow-hidden border">
-                {retweets.map((retweet) => (
-                  <TweetCard key={retweet.id} tweet={retweet} />
-                ))}
-              </div>
+              <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>
             )
           )}
                 </div>

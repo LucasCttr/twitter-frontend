@@ -6,6 +6,7 @@ export function useInfiniteProfileTweets({ authorId, type, limit = 20 }: { autho
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [cursor, setCursor] = useState<string | null | undefined>(undefined);
   const [loading, setLoading] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
@@ -33,6 +34,7 @@ export function useInfiniteProfileTweets({ authorId, type, limit = 20 }: { autho
       setHasMore(false);
     } finally {
       setLoading(false);
+      setInitialized(true);
     }
   }, [authorId, type, cursor, loading, hasMore, limit]);
 
@@ -66,5 +68,5 @@ export function useInfiniteProfileTweets({ authorId, type, limit = 20 }: { autho
     return () => observer.current?.disconnect();
   }, [fetchMore, hasMore, loading]);
 
-  return { tweets, loading, hasMore, loadMoreRef, setTweets };
+  return { tweets, loading, hasMore, loadMoreRef, setTweets, initialized } as const;
 }
