@@ -7,9 +7,14 @@ import type { Tweet } from "@/types/tweet";
 export default function FeedClient({ initialTweets, initialCursor }: { initialTweets: Tweet[]; initialCursor?: string | null }) {
   const { tweets, loading, hasMore, loadMoreRef, setTweets } = useInfiniteFeed(initialTweets, initialCursor);
 
-  // Callback para agregar el nuevo tweet al inicio del feed
+  // Callback para agregar el nuevo tweet al inicio del feed, evitando duplicados por id
   const handleNewTweet = (tweet: Tweet) => {
-    setTweets((prev: Tweet[]) => [tweet, ...prev]);
+    setTweets((prev: Tweet[]) => {
+      if (prev.some((t) => t.id === tweet.id)) {
+        return prev;
+      }
+      return [tweet, ...prev];
+    });
   };
 
   return (

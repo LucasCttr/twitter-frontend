@@ -24,7 +24,11 @@ export function useInfiniteFeed(initialTweets: Tweet[] = [], initialCursor?: str
       const res = await fetch(`/api/proxy/tweets?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch feed");
       const data: FeedResponse = await res.json();
-      setTweets((prev) => [...prev, ...(data.items || [])]);
+      setTweets((prev) => {
+        const existingIds = new Set(prev.map((t) => t.id));
+        const newItems = (data.items || []).filter((t) => !existingIds.has(t.id));
+        return [...prev, ...newItems];
+      });
       setCursor(data.nextCursor);
       setHasMore(!!data.nextCursor && (data.items?.length ?? 0) > 0);
     } catch (e) {
