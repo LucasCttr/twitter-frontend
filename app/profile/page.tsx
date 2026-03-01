@@ -17,17 +17,21 @@ type SessionType = {
 import { useEffect, useState } from "react";
 import ProfileCard from "../../components/ProfileCard";
 import TweetCard from "../../components/TweetCard";
+import { useInfiniteProfileTweets } from "@/lib/useInfiniteProfileTweets";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const [profile, setProfile] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tweets, setTweets] = useState<any[]>([]);
+  const [tweetsLocal, setTweetsLocal] = useState<any[]>([]);
   const [replies, setReplies] = useState<any[]>([]);
   const [likes, setLikes] = useState<any[]>([]);
   const [retweets, setRetweets] = useState<any[]>([]);
   const [selectedTab, setSelectedTab] = useState("tweets");
   const [loading, setLoading] = useState(false);
+
+  const authorId = (session as SessionType)?.user?.id ?? "";
+  const { tweets, loading: tweetsLoading, hasMore, loadMoreRef } = useInfiniteProfileTweets({ authorId, type: selectedTab });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -46,7 +50,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     // Limpiar el estado antes de cargar nuevos datos
-    setTweets([]);
+    setTweetsLocal([]);
     setReplies([]);
     setLikes([]);
     setRetweets([]);
@@ -61,7 +65,7 @@ export default function ProfilePage() {
         const res = await fetch(`/api/proxy/profile/tweets?${params.toString()}`);
         if (!res.ok) throw new Error("Failed to fetch tweets");
         const data = await res.json();
-        if (type === 'tweet') setTweets(data.data ?? []);
+        if (type === 'tweet') setTweetsLocal(data.data ?? []);
         else if (type === 'reply') setReplies(data.data ?? []);
         else if (type === 'like') setLikes(data.data ?? []);
         else if (type === 'retweet') setRetweets(data.data ?? []);
@@ -71,8 +75,9 @@ export default function ProfilePage() {
         setLoading(false);
       }
     };
-    if (selectedTab === 'tweets') fetchTweetsByType('tweet');
-    else if (selectedTab === 'replies') fetchTweetsByType('reply');
+    if (selectedTab === 'tweets') {
+      // tweets are handled by the infinite hook, nothing to do here
+    } else if (selectedTab === 'replies') fetchTweetsByType('reply');
     else if (selectedTab === 'likes') fetchTweetsByType('like');
     else if (selectedTab === 'retweets') fetchTweetsByType('retweet');
   }, [session, selectedTab]);
@@ -111,6 +116,9 @@ export default function ProfilePage() {
                 {tweets.map((tweet) => (
                   <TweetCard key={tweet.id} tweet={tweet} />
                 ))}
+                <div ref={loadMoreRef} />
+                {tweetsLoading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}
+                {!hasMore && tweets.length > 0 && <div className="p-4 text-center text-xs text-zinc-400">No more tweets</div>}
               </div>
             )
           )}

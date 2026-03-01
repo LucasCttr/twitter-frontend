@@ -1,10 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import type { Tweet } from "@/types/tweet";
-
-interface FeedResponse {
-  items: Tweet[];
-  nextCursor?: string | null;
-}
+import { fetchTweets } from "@/lib/tweetsClient";
 
 export function useInfiniteFeed(initialTweets: Tweet[] = [], initialCursor?: string | null) {
   const [tweets, setTweets] = useState<Tweet[]>(initialTweets);
@@ -18,12 +14,7 @@ export function useInfiniteFeed(initialTweets: Tweet[] = [], initialCursor?: str
     if (loading || !hasMore) return;
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (cursor) params.append("cursor", cursor);
-      params.append("take", "20");
-      const res = await fetch(`/api/proxy/tweets?${params.toString()}`);
-      if (!res.ok) throw new Error("Failed to fetch feed");
-      const data: FeedResponse = await res.json();
+      const data = await fetchTweets({ cursor: cursor ?? undefined, take: 20 });
       setTweets((prev) => {
         const existingIds = new Set(prev.map((t) => t.id));
         const newItems = (data.items || []).filter((t) => !existingIds.has(t.id));
