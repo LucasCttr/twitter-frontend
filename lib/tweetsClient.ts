@@ -21,7 +21,7 @@ export async function fetchTweets(params: TweetsParams = {}): Promise<TweetsResp
   if (take) qs.append('take', String(take));
   else if (limit) qs.append('limit', String(limit));
 
-  const base = authorId ? '/api/proxy/profile/tweets' : '/api/proxy/tweets';
+  const base = authorId ? `/api/proxy/users/${encodeURIComponent(authorId)}/tweets` : '/api/proxy/tweets';
   const url = `${base}?${qs.toString()}`;
   const res = await fetch(url, { credentials: 'same-origin' });
   if (!res.ok) throw new Error(`Failed to fetch tweets: ${res.status}`);

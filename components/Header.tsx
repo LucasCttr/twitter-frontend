@@ -33,7 +33,7 @@ export default function Header() {
             Trending
           </Link>
           <Link
-            href="/profile"
+            href={session?.user ? `/profile/${(session.user as any).id}` : '/auth/login'}
             className={`px-4 py-2 rounded-t font-semibold transition border-b-2 ${pathname.startsWith("/profile") ? "border-blue-600 text-blue-600" : "border-transparent text-zinc-400"}`}
           >
             Profile

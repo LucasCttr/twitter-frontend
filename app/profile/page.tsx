@@ -37,18 +37,15 @@ export default function ProfilePage() {
   const [retweetsLoaded, setRetweetsLoaded] = useState(false);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const accessToken = (session as SessionType)?.accessToken || (session as SessionType)?.user?.accessToken;
-      if (!accessToken) return;
-      try {
-        const res = await fetch("/api/proxy/profile");
-        if (!res.ok) throw new Error("Failed to fetch profile");
-        setProfile(await res.json());
-      } catch (err) {
-        setError("Failed to fetch profile");
+    // Redirect to /profile/:id for the current user
+    const redirectToSelf = async () => {
+      const user = (session as SessionType)?.user;
+      if (user?.id) {
+        // client-side navigation to the canonical profile URL
+        window.location.href = `/profile/${user.id}`;
       }
     };
-    fetchProfile();
+    redirectToSelf();
   }, [session]);
 
   useEffect(() => {
