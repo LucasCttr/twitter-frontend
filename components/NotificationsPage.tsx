@@ -14,6 +14,50 @@ export default function NotificationsPage() {
     // Optionally mark as read here
     if (url) router.push(url);
   }
+  
+  // Card anidada para mostrar el tweet original del usuario logueado
+  function ShowOwnTweetCard({ tweet }: { tweet: any }) {
+    // Obtener usuario logueado desde window.__USER__ (debería setearse en _app o layout)
+    const [user, setUser] = React.useState<{ id?: string; name?: string | null; email?: string | null; username?: string | null } | null>(null);
+    React.useEffect(() => {
+      if (typeof window !== 'undefined') {
+        if ((window as any).__USER__) {
+          setUser((window as any).__USER__);
+        } else {
+          // Leer de cookies si no está window.__USER__
+          const getCookie = (name: string) => {
+            const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+            return v ? decodeURIComponent(v[2]) : undefined;
+          };
+          const id = getCookie('userId');
+          const name = getCookie('userName');
+          const email = getCookie('userEmail');
+          if (id || name || email) {
+            setUser({ id, name, email });
+          }
+        }
+      }
+    }, []);
+    let name = user?.name;
+    let handle = user?.username
+      ?? (user?.email ? user.email.split("@")[0] : undefined)
+      ?? (user?.id ? user.id.slice(0, 8) : undefined)
+      ?? undefined;
+    if (!user) {
+      // fallback: mostrar id del tweet si no hay user
+      name = '';
+      handle = tweet.authorId ? tweet.authorId.slice(0, 8) : '';
+    }
+    return (
+      <div className="mt-2 p-3 rounded border border-zinc-700 bg-zinc-900 w-full flex flex-col self-stretch" style={{width: '100vw', maxWidth: '100%', minWidth: 0, alignSelf: 'stretch'}}>
+        <div className="flex items-center gap-2 mb-1">
+          {name && <span className="font-semibold text-zinc-200">{user?.name}</span>}
+          {handle && <span className="text-xs text-zinc-400">@{handle}</span>}
+        </div>
+        <div className="text-zinc-100 text-sm break-words whitespace-pre-line">{tweet.content}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-3xl border-l border-r border-zinc-200 dark:border-zinc-100 min-h-[calc(100vh-4rem)]">
@@ -78,6 +122,9 @@ export default function NotificationsPage() {
                       <>{new Date(it.createdAt).toLocaleString()}</>
                     )}
                   </div>
+                  {it.tweet && (
+                    <ShowOwnTweetCard tweet={it.tweet} />
+                  )}
                 </div>
               </div>
             );

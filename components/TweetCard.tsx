@@ -209,7 +209,7 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
               return (
                 <>
                   {retweeterText && (
-                    <p className="mt-05 text-sm text-zinc-900 dark:text-zinc-100">{retweeterText}</p>
+                    <p className="mt-05 text-sm text-zinc-900 dark:text-zinc-100 break-words whitespace-pre-line">{retweeterText}</p>
                   )}
                   <div className="mt-3 rounded-md border border-zinc-800 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 p-3">
                     <div className="flex items-start gap-3">
@@ -219,7 +219,7 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
                           <strong>{currentRetweet.author?.name ?? "Unknown"}</strong>
                           <span className="text-xs text-zinc-500 dark:text-zinc-400">@{(currentRetweet.author?.email ?? currentRetweet.author?.name ?? "").toString().split("@") [0]}</span>
                         </div>
-                        <p className="mt-2 text-sm text-zinc-900 dark:text-zinc-100">{currentRetweet.content ?? currentRetweet.text ?? ""}</p>
+                        <p className="mt-2 text-sm text-zinc-900 dark:text-zinc-100 break-words whitespace-pre-line">{currentRetweet.content ?? currentRetweet.text ?? ""}</p>
                         <div className="mt-2 flex items-center justify-between text-xs text-zinc-500">
                           <div className="flex items-center gap-3">
                             <span className={currentRetweet.likedByCurrentUser ? "font-bold text-red-500" : ""}>
@@ -239,7 +239,7 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
               );
             }
             // Fallback: show retweeter content (if any)
-            return <p className="mt-0.5 text-sm text-zinc-900 dark:text-zinc-100">{localTweet.content ?? localTweet.text ?? ""}</p>;
+            return <p className="mt-0.5 text-sm text-zinc-900 dark:text-zinc-100 break-words whitespace-pre-line w-full" style={{wordBreak: 'break-word', overflowWrap: 'break-word'}}>{localTweet.content ?? localTweet.text ?? ""}</p>;
           })()}
 
           <div className="mt-3 flex items-center justify-between text-sm text-zinc-500 tweet-actions">

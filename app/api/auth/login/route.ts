@@ -29,6 +29,15 @@ export async function POST(req: NextRequest) {
       res.cookies.set({ name: 'userId', value: String(userId), httpOnly: true, path: '/' });
     }
 
+    // Además, setear nombre y email en cookies para acceso en el frontend
+    const userName = data?.user?.name ?? null;
+    const userEmail = data?.user?.email ?? null;
+    if (userName) {
+      res.cookies.set({ name: 'userName', value: String(userName), httpOnly: false, path: '/' });
+    }
+    if (userEmail) {
+      res.cookies.set({ name: 'userEmail', value: String(userEmail), httpOnly: false, path: '/' });
+    }
     return res;
   } catch (e) {
     return NextResponse.json({ error: 'Login failed' }, { status: 500 });
