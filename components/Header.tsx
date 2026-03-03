@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
+import NotificationsButton from "./NotificationsButton";
 
 type UserInfo = { id?: string; name?: string | null; email?: string | null };
 
@@ -73,6 +74,7 @@ export default function Header() {
             <div>Loading…</div>
           ) : user ? (
             <div className="flex items-center gap-3">
+              <NotificationsButton />
               <span className="text-sm">{user.name ?? user.email}</span>
               <Button
                 onClick={async () => {
