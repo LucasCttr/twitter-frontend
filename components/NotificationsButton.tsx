@@ -235,9 +235,11 @@ export default function NotificationsButton() {
       if (!res.ok) return;
       const data = await res.json();
       const list = data.items ?? [];
+      // Keep full list in state but we'll display only unread items.
       setItems(list);
       try {
-        knownIdsRef.current = new Set(list.map((it: any) => String(it.id ?? it._id ?? '')));
+        // Track only unread IDs for dedupe/new-unread detection
+        knownIdsRef.current = new Set(list.filter((it: any) => !it.read).map((it: any) => String(it.id ?? it._id ?? '')));
       } catch (e) { knownIdsRef.current = new Set(); }
       // refresh unread count after loading items
       await fetchUnread();
@@ -288,11 +290,12 @@ export default function NotificationsButton() {
       const prev = knownIdsRef.current || new Set<string>();
       const current = new Set<string>();
       let newUnread = 0;
-      for (const it of items) {
+      // Only consider unread items for the visible/new-unread calculation
+      for (const it of items.filter((it) => !it.read)) {
         const id = String(it.id ?? it._id ?? '');
         current.add(id);
         if (!prev.has(id)) {
-          if (!it.read) newUnread += 1;
+          newUnread += 1;
         }
       }
       if (newUnread > 0 && !panelOpen) setCount((c) => c + newUnread);
@@ -319,22 +322,50 @@ export default function NotificationsButton() {
       </button>
 
       {panelOpen && (
-        <div className="absolute right-0 mt-2 w-80 max-w-[90vw] bg-white dark:bg-zinc-900 border rounded-md shadow-lg z-50">
-          <div className="p-2 border-b flex items-center justify-between">
+        <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-80 max-w-[90vw] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-md shadow-lg z-50 overflow-hidden">
+          <div className="p-2 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between bg-white dark:bg-zinc-900">
             <strong>Notifications</strong>
             <div className="flex items-center gap-2">
               <button onClick={(e) => { e.stopPropagation(); markAllRead(); }} className="text-xs text-zinc-500 hover:underline">Mark all read</button>
               <a href="/notifications" onClick={(e) => { e.stopPropagation(); setPanelOpen(false); }} className="text-xs text-blue-600 hover:underline">View all</a>
             </div>
           </div>
-          <div className="max-h-72 overflow-auto">
+          <div className="max-h-72 overflow-auto bg-white dark:bg-zinc-900">
             {loadingItems ? (
-              <div className="p-4 text-sm text-zinc-500">Loading…</div>
-            ) : items.length === 0 ? (
-              <div className="p-4 text-sm text-zinc-500">No notifications</div>
-            ) : (
-              items.map((it) => (
-                <div key={it.id} className={`p-3 border-b hover:bg-zinc-50 dark:hover:bg-zinc-800 ${it.read ? 'opacity-60' : ''}`} onClick={(e) => { e.stopPropagation(); markReadAndNavigate(it.id, it.url ?? (it.targetType === 'TWEET' && it.targetId ? `/tweet/${it.targetId}` : undefined)); setPanelOpen(false); }}>
+                <div className="p-4 text-sm text-zinc-500">Loading…</div>
+              ) : items.filter((it) => !it.read).length === 0 ? (
+                <div className="p-4 text-sm text-zinc-500">No unread notifications</div>
+              ) : (
+                items.filter((it) => !it.read).map((it) => {
+                  // Compute navigation URL: prefer explicit `url`, then tweet target, then actor profile for follow actions
+                    let url: string | undefined = it.url;
+                    // Normalize server-provided URLs: if backend returned `/user/:id`, rewrite to `/profile/:id`
+                    try {
+                      if (typeof url === 'string' && url.includes('/user/')) {
+                        try {
+                          const u = new URL(url, window.location.origin);
+                          u.pathname = u.pathname.replace(/\/user\//, '/profile/');
+                          url = u.pathname + u.search + u.hash;
+                        } catch (e) {
+                          // fallback simple replace for relative paths
+                          url = url.replace(/\/user\//, '/profile/');
+                        }
+                      }
+                    } catch (e) { /* ignore */ }
+
+                    if (!url) {
+                    if (it.targetType === 'TWEET' && it.targetId) url = `/tweet/${it.targetId}`;
+                    else if (typeof it.action === 'string' && it.action.toLowerCase().includes('follow')) {
+                    // Prefer username-based profile route when available, otherwise fallback to id.
+                    const actorUsername = it.actor?.username ?? it.actor?.handle;
+                    const actorId = it.actor?.id ?? it.actor?.userId ?? it.actor?._id;
+                    if (actorUsername) url = `/profile/${actorUsername}`;
+                    else if (actorId) url = `/profile/${actorId}`;
+                    }
+                  }
+
+                  return (
+                  <div key={it.id} className={`p-3 border-b border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 ${it.read ? 'opacity-60' : ''}`} onClick={(e) => { e.stopPropagation(); markReadAndNavigate(it.id, url); setPanelOpen(false); }}>
                   <div className="flex items-start gap-3">
                     <div className="h-8 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700" />
                     <div className="flex-1">
@@ -344,8 +375,9 @@ export default function NotificationsButton() {
                     </div>
                   </div>
                 </div>
-              ))
-            )}
+                );
+                })
+              )}
           </div>
         </div>
       )}
