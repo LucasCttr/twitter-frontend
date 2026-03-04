@@ -20,7 +20,7 @@ export default async function TweetDetailPage({ params }: { params: { id: string
   const { id } = await params;
   const tweet = await fetchTweet(id);
   return (
-    <div className="mx-auto max-w-3xl border-l border-r border-white dark:border-white min-h-[calc(100vh-4rem)]">
+    <div className="mx-auto max-w-3xl min-h-[calc(100vh-4rem)] px-4">
       <TweetDetailClient tweet={tweet} />
     </div>
   );

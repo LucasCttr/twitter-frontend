@@ -54,6 +54,9 @@
 
 :root {
   --radius: 0.625rem;
+  /* Center width to align gutters (matches pages using max-w-3xl) */
+  --center-width: 48rem;
+  --gutter-width: max(0px, calc((100vw - var(--center-width)) / 2));
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -86,6 +89,42 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
   --inner-bg: oklch(0.94 0 0);
+}
+
+/* Force a dark page background so gutters remain dark on initial render */
+html, body, #__next {
+  background-color: #1f1f1f !important;
+  color: var(--foreground);
+}
+
+/* Align existing fixed gutters/dividers to centered container using computed gutter width */
+@media (min-width: 1024px) {
+  /* Stronger, fallback-safe gutter sizing and color so side areas stay dark.
+     Uses explicit calc with the center width to avoid relying on CSS var support in older browsers. */
+  .gutter-left, .gutter-right {
+    display: block !important;
+    position: fixed !important;
+    inset-block: 0 !important;
+    background: #0b0b0b !important;
+    z-index: 0 !important;
+    /* width = (viewport - center) / 2 */
+    width: max(0px, calc((100vw - 45rem) / 2)) !important;
+  }
+  .gutter-left { left: 0 !important; }
+  .gutter-right { right: 0 !important; }
+
+  .divider-left, .divider-right {
+    position: fixed !important;
+    inset-block: 0 !important;
+    width: 1px !important;
+    /* Restored brighter divider: white with stronger alpha and subtle inset highlight */
+    background: rgba(255,255,255,0.24) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04) !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
+  }
+  .divider-left { left: max(0px, calc((100vw - 45rem) / 2)) !important; }
+  .divider-right { right: max(0px, calc((100vw - 45rem) / 2)) !important; }
 }
 
 .dark {

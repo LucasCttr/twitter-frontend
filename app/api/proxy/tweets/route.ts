@@ -8,10 +8,17 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const cursor = searchParams.get("cursor");
   const take = searchParams.get("take");
-  // Construir la URL del backend con los parámetros
-  const backendUrl = new URL(`${process.env.BACKEND_URL}/feed`);
-  if (cursor) backendUrl.searchParams.set("cursor", cursor);
-  if (take) backendUrl.searchParams.set("take", take);
+
+  // Decide target: if any search/filter params present, forward to /tweets, else /feed
+  const hasSearch = searchParams.has('q') || searchParams.has('content') || searchParams.has('sort');
+  const targetPath = hasSearch ? '/tweets' : '/feed';
+  const backendUrl = new URL(`${process.env.BACKEND_URL}${targetPath}`);
+
+  // Forward all query params as-is (do NOT map `q` -> `content`) so both tweets and users use `q`.
+  for (const [key, value] of searchParams.entries()) {
+    if (!value) continue;
+    backendUrl.searchParams.set(key, value);
+  }
 
   const backendRes = await fetch(backendUrl.toString(), {
     headers: { Authorization: `Bearer ${accessToken}` },

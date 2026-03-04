@@ -18,9 +18,9 @@ export default function FeedClient({ initialTweets, initialCursor }: { initialTw
   };
 
   return (
-    <div className="mx-auto max-w-3xl border-l border-r border-white dark:border-white min-h-[calc(100vh-4rem)]">
+    <div className="mx-auto max-w-3xl min-h-[calc(100vh-4rem)] px-4">
       <main className="max-w-2xl mx-auto p-4">
-        <section className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+        <section className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700 inner-bg">
           <div className="border-b-0">
             <NewTweetComposer onTweetCreated={handleNewTweet} />
           </div>

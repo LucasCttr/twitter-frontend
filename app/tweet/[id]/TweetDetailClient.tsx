@@ -38,7 +38,7 @@ export default function TweetDetailClient({ tweet }: { tweet: Tweet }) {
 
   return (
     <main className="max-w-2xl mx-auto p-4">
-      <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+      <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700 inner-bg">
         <div className="rounded-t-md">
           <TweetCard tweet={tweet} />
         </div>

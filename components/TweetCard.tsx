@@ -143,14 +143,9 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
                 className="h-10 w-10 rounded-full object-cover bg-zinc-200 dark:bg-zinc-700"
               />
             ) : (
-              <img
-                src={(() => {
-                  const seed = (localTweet.author?.email ?? localTweet.author?.id ?? localTweet.author?.name ?? 'anon').toString();
-                  return `https://api.dicebear.com/6.x/identicon/svg?seed=${encodeURIComponent(seed)}`;
-                })()}
-                alt={(localTweet.author?.name ?? 'avatar')}
-                className="h-10 w-10 rounded-full object-cover bg-zinc-200 dark:bg-zinc-700"
-              />
+              <div className="h-10 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                {((localTweet.author?.name ?? localTweet.author?.email ?? localTweet.author?.id ?? 'A') + '').charAt(0).toString().toUpperCase()}
+              </div>
             )}
           </a>
         </div>
@@ -213,7 +208,9 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
                   )}
                   <div className="mt-3 rounded-md border border-zinc-800 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 p-3">
                     <div className="flex items-start gap-3">
-                      <div className="h-8 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+                      <div className="h-8 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-xs font-medium text-zinc-800 dark:text-zinc-100">
+                        {((currentRetweet?.author?.name ?? currentRetweet?.author?.email ?? 'A') + '').charAt(0).toString().toUpperCase()}
+                      </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
                           <strong>{currentRetweet.author?.name ?? "Unknown"}</strong>

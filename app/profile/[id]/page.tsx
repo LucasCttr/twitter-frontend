@@ -37,35 +37,43 @@ export default function ProfileByIdPage() {
 
   return (
     <>
-      <div className="mx-auto max-w-3xl border-l border-r border-white dark:border-white min-h-[calc(100vh-4rem)]">
+      <div className="mx-auto max-w-3xl min-h-[calc(100vh-4rem)] px-4">
         <div className="max-w-2xl mx-auto p-4">
-          <ProfileCard profile={profile} />
-          <div className="flex justify-center mb-4 gap-2">
-            <button
-              className={`px-4 py-2 rounded-t font-semibold transition border-b-2 ${selectedTab === "tweets" ? "border-blue-600 text-blue-600" : "border-transparent text-zinc-400"}`}
-              onClick={() => setSelectedTab("tweets")}
-            >Tweets</button>
-            <button
-              className={`px-4 py-2 rounded-t font-semibold transition border-b-2 ${selectedTab === "replies" ? "border-blue-600 text-blue-600" : "border-transparent text-zinc-400"}`}
-              onClick={() => setSelectedTab("replies")}
-            >Replies</button>
-            <button
-              className={`px-4 py-2 rounded-t font-semibold transition border-b-2 ${selectedTab === "likes" ? "border-blue-600 text-blue-600" : "border-transparent text-zinc-400"}`}
-              onClick={() => setSelectedTab("likes")}
-            >Likes</button>
-            <button
-              className={`px-4 py-2 rounded-t font-semibold transition border-b-2 ${selectedTab === "retweets" ? "border-blue-600 text-blue-600" : "border-transparent text-zinc-400"}`}
-              onClick={() => setSelectedTab("retweets")}
-            >Retweets</button>
-          </div>
+          <div className="max-w-2xl mx-auto">
+            <div className="rounded-lg overflow-hidden border border-zinc-800 dark:border-zinc-700 inner-bg">
+              <div className="p-4">
+                <ProfileCard profile={profile} onChange={(next: any) => {
+                  setProfile((prev: any) => ({ ...(prev ?? {}), ...(next ?? {}) }));
+                }} />
+              </div>
 
-          <div>
+              <div className="border-t border-zinc-800 dark:border-zinc-700 bg-transparent">
+                <div className="flex justify-center gap-2 px-4 py-3">
+                  <button
+                    className={`px-4 py-2 font-semibold transition ${selectedTab === "tweets" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
+                    onClick={() => setSelectedTab("tweets")}
+                  >Tweets</button>
+                  <button
+                    className={`px-4 py-2 font-semibold transition ${selectedTab === "replies" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
+                    onClick={() => setSelectedTab("replies")}
+                  >Replies</button>
+                  <button
+                    className={`px-4 py-2 font-semibold transition ${selectedTab === "likes" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
+                    onClick={() => setSelectedTab("likes")}
+                  >Likes</button>
+                  <button
+                    className={`px-4 py-2 font-semibold transition ${selectedTab === "retweets" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
+                    onClick={() => setSelectedTab("retweets")}
+                  >Retweets</button>
+                </div>
+
+                <div className="p-4">
             {selectedTab === 'tweets' && (
               tweetsHook.initialized ? (
                 tweetsHook.tweets.length === 0 ? (
                   <div className="text-center text-zinc-500">No tweets yet</div>
-                ) : (
-                  <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+                  ) : (
+                  <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
                     {tweetsHook.tweets.map((tweet) => (
                       <TweetCard key={tweet.id} tweet={tweet} />
                     ))}
@@ -83,8 +91,8 @@ export default function ProfileByIdPage() {
               repliesHook.initialized ? (
                 repliesHook.tweets.length === 0 ? (
                   <div className="text-center text-zinc-500">No replies yet</div>
-                ) : (
-                  <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+                  ) : (
+                  <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
                     {repliesHook.tweets.map((reply) => (
                       <TweetCard key={reply.id} tweet={reply} />
                     ))}
@@ -102,8 +110,8 @@ export default function ProfileByIdPage() {
               likesHook.initialized ? (
                 likesHook.tweets.length === 0 ? (
                   <div className="text-center text-zinc-500">No likes yet</div>
-                ) : (
-                  <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+                  ) : (
+                  <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
                     {likesHook.tweets.map((like) => (
                       <TweetCard key={like.id} tweet={like} />
                     ))}
@@ -121,8 +129,8 @@ export default function ProfileByIdPage() {
               retweetsHook.initialized ? (
                 retweetsHook.tweets.length === 0 ? (
                   <div className="text-center text-zinc-500">No retweets yet</div>
-                ) : (
-                  <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+                  ) : (
+                  <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
                     {retweetsHook.tweets.map((retweet) => (
                       <TweetCard key={retweet.id} tweet={retweet} />
                     ))}
@@ -135,6 +143,9 @@ export default function ProfileByIdPage() {
                 <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>
               )
             )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

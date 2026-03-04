@@ -24,16 +24,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Detectar si estamos en login o register
-  const isAuthPage = typeof window !== "undefined" && ["/auth/login", "/auth/register"].includes(window.location.pathname);
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {!isAuthPage && <Header />}
-          {children}
+          {/* Fixed side gutters to avoid flicker when pages update */}
+          <div className="hidden lg:block fixed inset-y-0 left-0 w-150 bg-black z-0 gutter-left" aria-hidden />
+          <div className="hidden lg:block fixed inset-y-0 right-0 w-150 bg-black z-0 gutter-right" aria-hidden />
+
+          {/* Thin vertical divider lines placed at the inner edge of the gutters (visible, fixed) */}
+          <div className="hidden lg:block fixed inset-y-0 left-150 w-px bg-white/30 z-10 pointer-events-none divider-left" aria-hidden />
+          <div className="hidden lg:block fixed inset-y-0 right-150 w-px bg-white/30 z-10 pointer-events-none divider-right" aria-hidden />
+
+          <div className="relative z-20">
+            <Header />
+            {children}
+          </div>
         </Providers>
       </body>
     </html>

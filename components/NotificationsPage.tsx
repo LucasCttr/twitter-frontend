@@ -60,12 +60,15 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl border-l border-r border-zinc-200 dark:border-zinc-100 min-h-[calc(100vh-4rem)]">
+    <div className="mx-auto max-w-3xl min-h-[calc(100vh-4rem)] px-4">
       <main className="max-w-2xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Notifications</h1>
-        {items.length === 0 && !loading && <div className="text-zinc-500">No hay notificaciones.</div>}
-        <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
-          {items.map((it) => {
+        <div className="rounded-lg overflow-hidden border border-zinc-800 dark:border-zinc-700 inner-bg">
+          <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">Notifications</h1>
+            {items.length === 0 && !loading && <div className="text-zinc-500">No hay notificaciones.</div>}
+          </div>
+          <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
+            {items.map((it) => {
             let url: string | undefined = it.url;
             try {
               if (typeof url === 'string' && url.includes('/user/')) {
@@ -91,7 +94,7 @@ export default function NotificationsPage() {
             return (
               <div
                 key={it.id}
-                className={`flex items-start gap-3 px-4 py-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900 border border-zinc-800 dark:border-zinc-700 ${it.read ? 'opacity-60' : ''}`}
+                className={`flex items-start gap-3 px-4 py-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900 ${it.read ? 'opacity-60' : ''}`}
                 onClick={() => handleClickNotification(it.id, url)}
               >
                 <div className="flex-shrink-0">
@@ -129,7 +132,8 @@ export default function NotificationsPage() {
               </div>
             );
           })}
-          <div ref={loadMoreRef} />
+            <div ref={loadMoreRef} />
+          </div>
         </div>
         {loading && <div className="mt-4 text-zinc-500">Cargando…</div>}
       </main>

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 // using native input here to avoid nested borders
 import NotificationsButton from "./NotificationsButton";
+import router from "next/router";
 
 type UserInfo = { id?: string; name?: string | null; email?: string | null };
 
@@ -12,6 +13,8 @@ export default function Header() {
   const pathname = usePathname() || "/home";
   const [user, setUser] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  // const router = useRouter();
 
   useEffect(() => {
     let mounted = true;
@@ -95,6 +98,7 @@ function CenterNav({ pathname, user }: { pathname: string; user: UserInfo | null
 
 function RightGroup({ user, loading, setLoading }: { user: UserInfo | null; loading: boolean; setLoading: React.Dispatch<React.SetStateAction<boolean>> }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const menuRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -139,13 +143,26 @@ function RightGroup({ user, loading, setLoading }: { user: UserInfo | null; load
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
             </button>
-            <input
-              id="header-search-input"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              className="bg-transparent placeholder:text-zinc-500 focus:outline-none w-full text-sm py-0"
-            />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const q = searchQuery.trim();
+                if (!q) return;
+                // use window navigation to avoid router context issues
+                window.location.href = `/search?q=${encodeURIComponent(q)}&tab=relevance`;
+              }}
+              className="flex items-center w-full"
+            >
+              <input
+                id="header-search-input"
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search"
+                aria-label="Search"
+                className="bg-transparent placeholder:text-zinc-500 focus:outline-none w-full text-sm py-0"
+              />
+            </form>
           </div>
           <NotificationsButton />
 
