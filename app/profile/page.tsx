@@ -20,7 +20,9 @@ import TweetCard from "../../components/TweetCard";
 import { useInfiniteProfileTweets } from "@/lib/tweets";
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
+  const sessionHook = useSession();
+  const session = (sessionHook?.data ?? null) as SessionType | null;
+  const status = (sessionHook?.status ?? "unauthenticated") as string;
   const [profile, setProfile] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [tweetsLocal, setTweetsLocal] = useState<any[]>([]);

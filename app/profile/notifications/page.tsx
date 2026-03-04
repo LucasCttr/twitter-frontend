@@ -1,3 +1,5 @@
-import dynamic from "next/dynamic";
+import NotificationsPage from "../../../components/NotificationsPage";
 
-export default dynamic(() => import("../../components/NotificationsPage"), { ssr: false });
+export default function Page() {
+	return <NotificationsPage />;
+}

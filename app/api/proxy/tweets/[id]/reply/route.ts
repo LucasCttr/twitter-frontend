@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = await params;
+export async function POST(req: NextRequest, context: any) {
+  const params = await (context as any).params;
+  const { id } = params;
   const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? process.env.BACKEND_URL;
   if (!apiUrl) return NextResponse.json({ error: "Backend URL not configured" }, { status: 500 });
 
