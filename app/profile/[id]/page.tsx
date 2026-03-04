@@ -48,26 +48,26 @@ export default function ProfileByIdPage() {
               </div>
 
               <div className="border-t border-zinc-800 dark:border-zinc-700 bg-transparent">
-                <div className="flex justify-center gap-2 px-4 py-3">
+                <div className="flex justify-center gap-2 px-2 py-2 border-b border-zinc-800 dark:border-zinc-700">
                   <button
-                    className={`px-4 py-2 font-semibold transition ${selectedTab === "tweets" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
+                    className={`px-3 py-1 font-semibold transition text-sm ${selectedTab === "tweets" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
                     onClick={() => setSelectedTab("tweets")}
                   >Tweets</button>
                   <button
-                    className={`px-4 py-2 font-semibold transition ${selectedTab === "replies" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
+                    className={`px-3 py-1 font-semibold transition text-sm ${selectedTab === "replies" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
                     onClick={() => setSelectedTab("replies")}
                   >Replies</button>
                   <button
-                    className={`px-4 py-2 font-semibold transition ${selectedTab === "likes" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
+                    className={`px-3 py-1 font-semibold transition text-sm ${selectedTab === "likes" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
                     onClick={() => setSelectedTab("likes")}
                   >Likes</button>
                   <button
-                    className={`px-4 py-2 font-semibold transition ${selectedTab === "retweets" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
+                    className={`px-3 py-1 font-semibold transition text-sm ${selectedTab === "retweets" ? "border-b-2 border-blue-600 text-blue-600" : "text-zinc-400"}`}
                     onClick={() => setSelectedTab("retweets")}
                   >Retweets</button>
                 </div>
 
-                <div className="p-4">
+                <div className="py-2">
             {selectedTab === 'tweets' && (
               tweetsHook.initialized ? (
                 tweetsHook.tweets.length === 0 ? (
@@ -75,7 +75,7 @@ export default function ProfileByIdPage() {
                   ) : (
                   <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
                     {tweetsHook.tweets.map((tweet) => (
-                      <TweetCard key={tweet.id} tweet={tweet} />
+                      <TweetCard key={tweet.id} tweet={tweet} noBorderTop />
                     ))}
                     <div ref={tweetsHook.loadMoreRef} />
                     {tweetsHook.loading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}
@@ -94,7 +94,7 @@ export default function ProfileByIdPage() {
                   ) : (
                   <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
                     {repliesHook.tweets.map((reply) => (
-                      <TweetCard key={reply.id} tweet={reply} />
+                      <TweetCard key={reply.id} tweet={reply} noBorderTop />
                     ))}
                     <div ref={repliesHook.loadMoreRef} />
                     {repliesHook.loading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}
@@ -113,7 +113,7 @@ export default function ProfileByIdPage() {
                   ) : (
                   <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
                     {likesHook.tweets.map((like) => (
-                      <TweetCard key={like.id} tweet={like} />
+                      <TweetCard key={like.id} tweet={like} noBorderTop />
                     ))}
                     <div ref={likesHook.loadMoreRef} />
                     {likesHook.loading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}
@@ -132,7 +132,7 @@ export default function ProfileByIdPage() {
                   ) : (
                   <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
                     {retweetsHook.tweets.map((retweet) => (
-                      <TweetCard key={retweet.id} tweet={retweet} />
+                      <TweetCard key={retweet.id} tweet={retweet} noBorderTop />
                     ))}
                     <div ref={retweetsHook.loadMoreRef} />
                     {retweetsHook.loading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}

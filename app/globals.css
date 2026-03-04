@@ -93,7 +93,7 @@
 
 /* Force a dark page background so gutters remain dark on initial render */
 html, body, #__next {
-  background-color: #1f1f1f !important;
+  background-color: #18181b !important;
   color: var(--foreground);
 }
 
