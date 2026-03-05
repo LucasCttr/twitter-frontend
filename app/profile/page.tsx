@@ -1,3 +1,5 @@
+// Removed server-side redirect logic to avoid multiple default exports.
+// If you want to redirect unauthenticated users, handle it in the main component below using useEffect or middleware.
 
 "use client";
 import { useSession } from "next-auth/react";
@@ -92,8 +94,7 @@ export default function ProfilePage() {
   if (!profile) return null;
   return (
     <>
-      <div className="mx-auto max-w-3xl min-h-[calc(100vh-4rem)] px-4">
-        <div className="max-w-2xl mx-auto p-4">
+      <div className="mt-4 p-4">
           <ProfileCard profile={profile} />
         <div className="flex justify-center mb-4 gap-2">
           <button
@@ -179,7 +180,6 @@ export default function ProfilePage() {
           )}
                 </div>
               </div>
-        </div>
     </>
   );
 }

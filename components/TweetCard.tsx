@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import type { Tweet } from "@/types/tweet";
 
 import { useRouter } from "next/navigation";
@@ -132,8 +133,8 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
     >
       <div className="flex items-start gap-3">
         <div>
-          <a
-            href={localTweet.author?.id ? `/profile/${localTweet.author.id}` : undefined}
+          <Link
+            href={localTweet.author?.id ? `/profile/${localTweet.author.id}` : "#"}
             onClick={e => e.stopPropagation()}
           >
             {localTweet.author?.image ? (
@@ -147,25 +148,25 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
                 {((localTweet.author?.name ?? localTweet.author?.email ?? localTweet.author?.id ?? 'A') + '').charAt(0).toString().toUpperCase()}
               </div>
             )}
-          </a>
+          </Link>
         </div>
         <div className="flex-1">
 
           <div className="mt-0.5 mb-1 flex items-center gap-2 text-base text-zinc-700 dark:text-zinc-300" style={{marginTop: '-3px'}}>
-            <a
-              href={localTweet.author?.id ? `/profile/${localTweet.author.id}` : undefined}
+            <Link
+              href={localTweet.author?.id ? `/profile/${localTweet.author.id}` : "#"}
               onClick={e => e.stopPropagation()}
               className="font-bold hover:underline"
             >
               {localTweet.author?.name ?? "Unknown"}
-            </a>
-            <a
+            </Link>
+            <Link
               href={
                 localTweet.author?.email
-                  ? `/profile/${localTweet.author.email.split("@")[0]}`
+                  ? `/profile/${localTweet.author.email.split("@") [0]}`
                   : localTweet.author?.id
                     ? `/profile/${localTweet.author.id}`
-                    : undefined
+                    : "#"
               }
               onClick={e => e.stopPropagation()}
               className="text-sm text-zinc-500 dark:text-zinc-400 hover:underline"
@@ -183,7 +184,7 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
                     : "anon";
                 return `@${handle}`;
               })()}
-            </a>
+            </Link>
           </div>
               {currentRetweet && !isNested && (
                 <div className="mb-2 text-[13px] text-blue-500 dark:text-blue-400 flex items-center gap-2" style={{marginTop: '-4px'}}>

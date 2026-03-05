@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import SuggestedUsers from "@/components/SuggestedUsers";
+import TrendingTopics from "@/components/TrendingTopics";
 import Providers from "./providers";
 
 const geistSans = Geist({
@@ -40,7 +42,13 @@ export default function RootLayout({
 
           <div className="relative z-20">
             <Header />
-            {children}
+            <div className="mx-auto w-full max-w-6xl flex flex-row justify-center relative">
+              <main className="w-full max-w-2xl mx-auto z-10">{children}</main>
+              <aside className="hidden xl:flex flex-col gap-6 fixed right-8 top-24 w-[320px]">
+                <SuggestedUsers />
+                <TrendingTopics />
+              </aside>
+            </div>
           </div>
         </Providers>
       </body>
