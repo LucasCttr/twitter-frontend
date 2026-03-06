@@ -94,9 +94,11 @@ export default function ProfilePage() {
   if (!profile) return null;
   return (
     <>
-      <div className="mt-4 p-4">
+      <div className="w-full mt-4" style={{ backgroundColor: '#18181b' }}>
+        <div className="w-full p-4" style={{ backgroundColor: 'transparent', border: 'none', borderRadius: 0 }}>
           <ProfileCard profile={profile} />
-        <div className="flex justify-center mb-4 gap-2">
+        </div>
+        <div className="flex justify-center mb-4 gap-2 mt-4">
           <button
             className={`px-4 py-2 rounded-t font-semibold transition border-b-2 ${selectedTab === "tweets" ? "border-blue-600 text-blue-600" : "border-transparent text-zinc-400"}`}
             onClick={() => setSelectedTab("tweets")}
@@ -114,13 +116,13 @@ export default function ProfilePage() {
             onClick={() => setSelectedTab("retweets")}
           >Retweets</button>
         </div>
-          <div>
+        <div className="w-full">
           {selectedTab === 'tweets' && (
             tweetsInitialized ? (
               tweets.length === 0 ? (
                 <div className="text-center text-zinc-500">No tweets yet</div>
               ) : (
-                <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+                <div className="w-full">
                   {tweets.map((tweet) => (
                     <TweetCard key={tweet.id} tweet={tweet} />
                   ))}
@@ -138,7 +140,7 @@ export default function ProfilePage() {
               replies.length === 0 ? (
                 <div className="text-center text-zinc-500">No replies yet</div>
               ) : (
-                <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+                <div className="w-full">
                   {replies.map((reply) => (
                     <TweetCard key={reply.id} tweet={reply} />
                   ))}
@@ -153,7 +155,7 @@ export default function ProfilePage() {
               likes.length === 0 ? (
                 <div className="text-center text-zinc-500">No likes yet</div>
               ) : (
-                <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+                <div className="w-full">
                   {likes.map((like) => (
                     <TweetCard key={like.id} tweet={like} />
                   ))}
@@ -168,7 +170,7 @@ export default function ProfilePage() {
               retweets.length === 0 ? (
                 <div className="text-center text-zinc-500">No retweets yet</div>
               ) : (
-                <div className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700">
+                <div className="w-full">
                   {retweets.map((retweet) => (
                     <TweetCard key={retweet.id} tweet={retweet} />
                   ))}
@@ -178,8 +180,8 @@ export default function ProfilePage() {
               <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>
             )
           )}
-                </div>
-              </div>
+        </div>
+        </div>
     </>
   );
 }

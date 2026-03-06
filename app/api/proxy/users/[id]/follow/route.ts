@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import forwardWithAutoRefresh from "../../_utils";
+import forwardWithAutoRefresh from "../../../_utils";
 
 async function forward(req: NextRequest, method: string) {
   const url = new URL(req.url);

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import SuggestedUsers from "@/components/SuggestedUsers";
-import TrendingTopics from "@/components/TrendingTopics";
+import AppShell from "@/components/AppShell";
 import Providers from "./providers";
 
 const geistSans = Geist({
@@ -32,24 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <div className="relative z-20 min-h-screen w-full flex flex-col" style={{ backgroundColor: '#18181c' }}>
-            <Header />
-                <div className="w-full flex justify-center items-start">
-                  <div className="w-full max-w-[1620px] mx-auto xl:grid xl:grid-cols-[430px_minmax(0,900px)_430px] xl:gap-0">
-                    <aside className="hidden xl:block w-[430px] p-4 pt-6 sticky top-0 border-r border-white/30" style={{ backgroundColor: '#18181b', borderLeft: '1px solid rgba(255, 255, 255, 0.28)' }}>
-                       <TrendingTopics />
-                    </aside>
-
-                    <section className="w-full" style={{ backgroundColor: '#18181b' }}>
-                      <main className="w-full max-w-1xl mx-auto z-10 min-h-screen bg-black px-0" style={{ backgroundColor: '#18181b' }}>{children}</main>
-                    </section>
-
-                    <aside className="hidden xl:block w-[430px] p-4 pt-6 sticky top-0 border-l border-white/30" style={{ backgroundColor: '#18181b', borderRight: '1px solid rgba(255, 255, 255, 0.28)' }}>
-                        <SuggestedUsers />
-                      </aside>
-                </div>
-                  </div>
-          </div>
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>

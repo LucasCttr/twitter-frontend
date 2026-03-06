@@ -129,7 +129,7 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
           : `p-4 ${noBorderTop ? '' : 'border-t border-zinc-800 dark:border-zinc-700'}`
       }
       onClick={handleShowTweet}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", backgroundColor: isNested ? undefined : '#0b0b0b' }}
     >
       <div className="flex items-start gap-3">
         <div>
@@ -217,7 +217,8 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
                     <p className="mt-05 text-sm text-zinc-900 dark:text-zinc-100 break-words whitespace-pre-line">{retweeterText}</p>
                   )}
                   <div
-                    className="mt-3 rounded-md border border-zinc-800 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 p-3 cursor-pointer hover:bg-zinc-100/80 dark:hover:bg-zinc-700/80 transition"
+                    className="mt-3 rounded-md border border-zinc-800 p-3 cursor-pointer transition"
+                    style={{ backgroundColor: '#0b0b0b' }}
                     onClick={e => {
                       e.stopPropagation();
                       if (currentRetweet?.id) router.push(`/tweet/${currentRetweet.id}`);

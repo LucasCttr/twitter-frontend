@@ -18,12 +18,13 @@ export default function FeedClient({ initialTweets, initialCursor }: { initialTw
   };
 
   return (
-    <div className="w-full min-h-[calc(100vh-4rem)] px-4">
-      <main className="w-full p-4">
-        <section className="rounded-md overflow-hidden border border-zinc-800 dark:border-zinc-700 inner-bg">
-          <div className="border-b-0">
+    <div className="w-full min-h-[calc(100vh-4rem)]">
+      <main className="w-full">
+        <div className="w-full inner-bg">
+          <div>
             <NewTweetComposer onTweetCreated={handleNewTweet} />
           </div>
+
           {tweets.length === 0 ? (
             <div className="p-6 text-center text-sm text-zinc-500">No tweets yet</div>
           ) : (
@@ -34,7 +35,7 @@ export default function FeedClient({ initialTweets, initialCursor }: { initialTw
           <div ref={loadMoreRef} />
           {loading && <div className="p-4 text-center text-xs text-zinc-400">Loading...</div>}
           {!hasMore && tweets.length > 0 && <div className="p-4 text-center text-xs text-zinc-400">No more tweets</div>}
-        </section>
+        </div>
       </main>
     </div>
   );
