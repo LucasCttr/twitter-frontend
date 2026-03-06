@@ -34,13 +34,21 @@ export default function RootLayout({
         <Providers>
           <div className="relative z-20 min-h-screen w-full flex flex-col" style={{ backgroundColor: '#18181c' }}>
             <Header />
-              <div className="mx-auto w-full max-w-3xl flex flex-row justify-center relative border-l border-r border-white/30">
-                <main className="w-full z-10 min-h-screen bg-black px-0" style={{ backgroundColor: '#18181b' }}>{children}</main>
-              <aside className="hidden xl:flex flex-col gap-6 fixed right-8 top-24 w-[320px]">
-                <SuggestedUsers />
-                <TrendingTopics />
-              </aside>
-            </div>
+                <div className="w-full flex justify-center items-start">
+                  <div className="w-full max-w-[1400px] mx-auto xl:grid xl:grid-cols-[320px_minmax(0,900px)_320px] xl:gap-0">
+                    <aside className="hidden xl:block w-[320px] p-4 pt-6 sticky top-0 h-screen overflow-y-auto border-r border-white/30" style={{ backgroundColor: '#18181b', borderLeft: '1px solid rgba(255, 255, 255, 0.28)' }}>
+                       <TrendingTopics />
+                    </aside>
+
+                    <section className="w-full" style={{ backgroundColor: '#18181b' }}>
+                      <main className="w-full max-w-1xl mx-auto z-10 min-h-screen bg-black px-0" style={{ backgroundColor: '#18181b' }}>{children}</main>
+                    </section>
+
+                    <aside className="hidden xl:block w-[320px] p-4 pt-6 sticky top-0 h-screen overflow-y-auto border-l border-white/30" style={{ backgroundColor: '#18181b', borderRight: '1px solid rgba(255, 255, 255, 0.28)' }}>
+                        <SuggestedUsers />
+                      </aside>
+                </div>
+                  </div>
           </div>
         </Providers>
       </body>
