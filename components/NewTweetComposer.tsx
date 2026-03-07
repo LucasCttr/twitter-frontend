@@ -46,13 +46,13 @@ export default function NewTweetComposer({ onTweetCreated }: NewTweetComposerPro
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border-b border-zinc-800 dark:border-zinc-700 bg-transparent">
+    <form onSubmit={handleSubmit} className="p-4 border-b border-zinc-500 dark:border-zinc-500 bg-transparent">
       <label className="sr-only">Nuevo tweet</label>
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="What's happening?"
-        className="w-full min-h-[72px] resize-none rounded-md border p-3 text-base text-zinc-900 dark:text-zinc-100 bg-transparent border-zinc-200 dark:border-zinc-700"
+        className="w-full min-h-[72px] resize-none rounded-md border p-3 text-base text-zinc-900 dark:text-zinc-100 bg-transparent border-zinc-500 dark:border-zinc-500"
       />
       <div className="mt-3 flex items-center justify-end gap-2">
         {error && <div className="text-sm text-red-600 mr-auto">{error}</div>}

@@ -44,7 +44,7 @@ export default function SuggestedUsers() {
   return (
     <div className="w-full flex justify-center items-start">
       <div className="w-full max-w-[380px] mx-auto -mt-3 rounded-md shadow border border-zinc-600 p-4" style={{ backgroundColor: '#0b0b0b' }}>
-        <h2 className="text-lg font-bold mb-4 text-zinc-100">Suggested users</h2>
+        <h2 className="text-lg font-bold mb-1 text-zinc-100">Suggested users</h2>
         {loading ? (
           <div className="text-zinc-400">Loading…</div>
         ) : users.length === 0 ? (
