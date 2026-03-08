@@ -111,6 +111,25 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
     }
   }
 
+  async function handleBookmark() {
+    const endpoint = `/api/proxy/bookmarks`;
+    const method = (localTweet as any).bookmarkedByCurrentUser ? "DELETE" : "POST";
+    try {
+      const res = await fetch(endpoint, {
+        method,
+        credentials: "include",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tweetId: localTweet.id }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setLocalTweet((prev) => ({ ...prev, ...updated }));
+      }
+    } catch (err) {
+      console.error(`[BOOKMARK] error`, err);
+    }
+  }
+
   const isNested = (depth ?? 0) > 0;
   const currentRetweet = resolved ?? null;
 
@@ -270,7 +289,7 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
             return <p className="mt-0.5 text-sm text-zinc-900 dark:text-zinc-100 break-words whitespace-pre-line w-full" style={{wordBreak: 'break-word', overflowWrap: 'break-word'}}>{localTweet.content ?? localTweet.text ?? ""}</p>;
           })()}
 
-          <div className="mt-3 flex items-center justify-between text-sm text-zinc-500 tweet-actions">
+              <div className="mt-3 flex items-center justify-between text-sm text-zinc-500 tweet-actions">
             <div className="flex items-center gap-4 -ml-2">
               <button
                 type="button"
@@ -305,6 +324,22 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12c0-4.556 4.694-8.25 10.5-8.25s10.5 3.694 10.5 8.25-4.694 8.25-10.5 8.25c-1.086 0-2.136-.12-3.125-.34a.75.75 0 00-.625.13l-3.25 2.5a.75.75 0 01-1.2-.6v-2.11a.75.75 0 00-.22-.53A7.457 7.457 0 012.25 12z" />
                 </svg>
                 <span>{localTweet.repliesCount ?? 0}</span>
+              </div>
+              
+              {/* Bookmark button */}
+              <div className="ml-3 inline-flex items-center">
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); handleBookmark(); }}
+                  title={(localTweet as any).bookmarkedByCurrentUser ? "Quitar marcador" : "Guardar tweet"}
+                  className={`inline-flex items-center gap-2 px-2 py-1 rounded-md transition ${ (localTweet as any).bookmarkedByCurrentUser ? "bg-transparent font-semibold" : "hover:bg-zinc-800/50 dark:hover:bg-zinc-700/50"}`}
+                >
+                  {/* Bookmark icon */}
+                  <svg className={`${(localTweet as any).bookmarkedByCurrentUser ? "h-4 w-4 text-yellow-400" : "h-4 w-4 text-zinc-500 dark:text-zinc-400"}`} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 5v14l7-5 7 5V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z" />
+                  </svg>
+                  <span className={`${(localTweet as any).bookmarkedByCurrentUser ? "font-semibold text-zinc-50" : "text-zinc-400 dark:text-zinc-400"}`}>{(localTweet as any).bookmarksCount ?? 0}</span>
+                </button>
               </div>
             </div>
             <div className="text-xs text-zinc-400 dark:text-zinc-500">{localTweet.createdAt ? new Date(localTweet.createdAt).toLocaleString() : "Fecha desconocida"}</div>

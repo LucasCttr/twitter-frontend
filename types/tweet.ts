@@ -22,6 +22,9 @@ export interface TweetItem {
   replies?: TweetItem[];
   likedByCurrentUser?: boolean;
   retweetedByCurrentUser?: boolean;
+  // Optional bookmark metadata returned by backend
+  bookmarkedByCurrentUser?: boolean;
+  bookmarksCount?: number;
 }
 
 export type Tweet = TweetItem;
