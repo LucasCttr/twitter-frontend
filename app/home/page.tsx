@@ -1,6 +1,7 @@
 import FeedClient from "./FeedClient";
 import type { FeedResponse } from "@/types/feed";
 import { Tweet } from "@/types/tweet";
+import { normalizeTweet } from "@/lib/normalizeTweet";
 import { cookies } from 'next/headers';
 
 async function getFeed(): Promise<{ items: Tweet[]; nextCursor?: string | null }> {
@@ -25,5 +26,6 @@ async function getFeed(): Promise<{ items: Tweet[]; nextCursor?: string | null }
 
 export default async function HomeFeedPage() {
   const { items, nextCursor } = await getFeed();
-  return <FeedClient initialTweets={items} initialCursor={nextCursor} />;
+  const normalized = Array.isArray(items) ? items.map((i: any) => normalizeTweet(i)) : [];
+  return <FeedClient initialTweets={normalized} initialCursor={nextCursor} />;
 }

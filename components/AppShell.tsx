@@ -23,7 +23,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <div className="w-full flex justify-center items-start">
         <div className="xl:grid xl:grid-cols-[340px_minmax(0,45rem)_340px] xl:gap-0 mx-auto">
           <aside
-            className="hidden xl:block w-[340px] p-4 pt-6 sticky top-16 h-[calc(100vh-64px)] overflow-auto border-r border-white/30"
+            className="hidden xl:block w-[340px] p-4 pt-6 sticky top-15 h-[calc(100vh-64px)] overflow-auto border-r border-white/30"
             style={{ backgroundColor: '#18181b', borderLeft: '1px solid rgba(255, 255, 255, 0.28)' }}
           >
             <div>
@@ -83,7 +83,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </section>
 
           <aside
-            className="hidden xl:block w-[360px] p-4 pt-6 sticky top-16 h-[calc(100vh-64px)] overflow-auto border-l border-white/30"
+            className="hidden xl:block w-[360px] p-4 pt-6 sticky top-15 h-[calc(100vh-64px)] overflow-auto border-l border-white/30"
             style={{ backgroundColor: '#18181b', borderRight: '1px solid rgba(255, 255, 255, 0.28)' }}
           >
             <div className="space-y-4">

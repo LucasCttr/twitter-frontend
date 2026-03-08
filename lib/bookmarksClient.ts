@@ -8,6 +8,8 @@ interface BookmarksResponse<T> {
   nextCursor?: string | null;
 }
 
+import { normalizeTweet } from "./normalizeTweet";
+
 export async function fetchBookmarks(params: BookmarksParams = {}): Promise<BookmarksResponse<any>> {
   const { cursor, limit } = params;
   const qs = new URLSearchParams();
@@ -17,7 +19,8 @@ export async function fetchBookmarks(params: BookmarksParams = {}): Promise<Book
   const res = await fetch(url, { credentials: 'include' });
   if (!res.ok) throw new Error(`Failed to fetch bookmarks: ${res.status}`);
   const raw = await res.json();
-  const items = raw?.items ?? raw?.data ?? raw ?? [];
+  const itemsRaw = raw?.items ?? raw?.data ?? raw ?? [];
+  const items = Array.isArray(itemsRaw) ? itemsRaw.map((i: any) => normalizeTweet(i)) : [];
   const nextCursor = raw?.nextCursor ?? raw?.cursor ?? raw?.next_cursor ?? null;
   return { items, nextCursor };
 }

@@ -1,9 +1,9 @@
+import React from "react";
 import SearchResults from "@/components/SearchResults";
 
-export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string; tab?: string }> | { q?: string; tab?: string } }) {
-  const params = await searchParams;
-  const q = params?.q ?? "";
-  const tab = params?.tab ?? "relevance";
+export default function SearchPage({ searchParams }: { searchParams?: Record<string, any> }) {
+  const q = (searchParams?.q as string) ?? "";
+  const tab = (searchParams?.tab as string) ?? "relevance";
   return (
     <main>
       <SearchResults q={q} initialTab={tab} />

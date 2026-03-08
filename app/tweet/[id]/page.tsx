@@ -1,6 +1,7 @@
 import type { Tweet } from "@/types/tweet";
 import { cookies } from 'next/headers';
 import TweetDetailClient from "./TweetDetailClient";
+import { normalizeTweet } from "@/lib/normalizeTweet";
 
 async function fetchTweet(id: string): Promise<Tweet> {
   const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -13,7 +14,8 @@ async function fetchTweet(id: string): Promise<Tweet> {
   } catch (e) {}
   const res = await fetch(`${apiUrl.replace(/\/$/, "")}/tweets/${id}`, { headers });
   if (!res.ok) throw new Error("Tweet not found");
-  return res.json();
+  const raw = await res.json().catch(() => null);
+  return normalizeTweet(raw);
 }
 
 export default async function TweetDetailPage({ params }: { params: { id: string } }) {

@@ -11,6 +11,8 @@ interface TweetsResponse<T> {
   nextCursor?: string | null;
 }
 
+import { normalizeTweet } from "./normalizeTweet";
+
 export async function fetchTweets(params: TweetsParams = {}): Promise<TweetsResponse<any>> {
   const { authorId, type, cursor, limit, take } = params;
   const qs = new URLSearchParams();
@@ -27,7 +29,8 @@ export async function fetchTweets(params: TweetsParams = {}): Promise<TweetsResp
   if (!res.ok) throw new Error(`Failed to fetch tweets: ${res.status}`);
   const raw = await res.json();
   // normalize shapes: { items, nextCursor } or { data, cursor } or { items: [], meta: { nextCursor }}
-  const items = raw?.items ?? raw?.data ?? raw?.tweets ?? [];
+  const itemsRaw = raw?.items ?? raw?.data ?? raw?.tweets ?? [];
+  const items = Array.isArray(itemsRaw) ? itemsRaw.map((i: any) => normalizeTweet(i)) : [];
   const nextCursor = raw?.nextCursor ?? raw?.cursor ?? raw?.meta?.nextCursor ?? raw?.next_cursor ?? null;
   return { items, nextCursor };
 }
@@ -36,5 +39,6 @@ export async function fetchTweetById(id: string) {
   if (!id) throw new Error('Missing id');
   const res = await fetch(`/api/proxy/tweets/${encodeURIComponent(id)}`, { credentials: 'include' });
   if (!res.ok) throw new Error(`Failed to fetch tweet ${id}: ${res.status}`);
-  return res.json();
+  const raw = await res.json();
+  return normalizeTweet(raw);
 }

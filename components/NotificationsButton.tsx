@@ -284,6 +284,18 @@ export default function NotificationsButton() {
     return () => { document.removeEventListener('mousedown', onDocClick); };
   }, [panelOpen]);
 
+  // Listen for global event when notifications are marked read elsewhere
+  useEffect(() => {
+    function onMarkedAll() {
+      // mark local items read and refresh unread count
+      setItems((prev) => prev.map((it) => ({ ...it, read: true })));
+      setCount(0);
+      try { fetchUnread(); } catch (e) { /* ignore */ }
+    }
+    window.addEventListener('notifications:markedAllRead', onMarkedAll as EventListener);
+    return () => window.removeEventListener('notifications:markedAllRead', onMarkedAll as EventListener);
+  }, []);
+
   // When `items` changes, increment badge for any new unseen IDs (dedupe)
   useEffect(() => {
     try {

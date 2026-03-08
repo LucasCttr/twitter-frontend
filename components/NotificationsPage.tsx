@@ -60,14 +60,15 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl min-h-[calc(100vh-4rem)] px-4">
-      <main className="max-w-2xl mx-auto p-4">
-        <div className="rounded-lg overflow-hidden border border-zinc-800 dark:border-zinc-700 inner-bg">
+    <div className="w-full min-h-[calc(100vh-4rem)]">
+      <main className="w-full">
+        {/* Mark all notifications read on mount */}
+        <MarkAllReadOnMount />
           <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Notifications</h1>
+            <h1 className="text-2xl font-bold mb-0 text-white text-center">Notifications</h1>
             {items.length === 0 && !loading && <div className="text-zinc-500">No hay notificaciones.</div>}
           </div>
-          <div className="divide-y divide-zinc-800 dark:divide-zinc-700">
+          <div className="border-t border-[#262629] divide-y divide-[#262629]">
             {items.map((it) => {
             let url: string | undefined = it.url;
             try {
@@ -134,9 +135,27 @@ export default function NotificationsPage() {
           })}
             <div ref={loadMoreRef} />
           </div>
-        </div>
         {loading && <div className="mt-4 text-zinc-500">Cargando…</div>}
       </main>
     </div>
   );
+}
+
+function MarkAllReadOnMount() {
+  React.useEffect(() => {
+    let cancelled = false;
+    async function markAll() {
+      try {
+        const res = await fetch('/api/notifications/mark-read', { method: 'POST', credentials: 'include' });
+        if (!res.ok) return;
+        if (cancelled) return;
+        try { window.dispatchEvent(new CustomEvent('notifications:markedAllRead')); } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
+    }
+    markAll();
+    return () => { cancelled = true; };
+  }, []);
+  return null;
 }

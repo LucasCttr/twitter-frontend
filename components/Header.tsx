@@ -1,16 +1,18 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 // using native input here to avoid nested borders
 import NotificationsButton from "./NotificationsButton";
 import router from "next/router";
 
+
 type UserInfo = { id?: string; name?: string | null; email?: string | null };
 
 export default function Header() {
   const pathname = usePathname() || "/home";
+  const router = useRouter();
   const [user, setUser] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,7 +58,7 @@ export default function Header() {
 
         {/* Right: Theme, Search, Notifications, User */}
         <div className="flex items-center justify-end gap-8 z-20 justify-self-end px-8">
-          <RightGroup user={user} loading={loading} setLoading={setLoading} />
+          <RightGroup user={user} loading={loading} setLoading={setLoading} pathname={pathname} />
         </div>
       </div>
     </header>
@@ -96,7 +98,7 @@ function CenterNav({ pathname, user }: { pathname: string; user: UserInfo | null
   );
 }
 
-function RightGroup({ user, loading, setLoading }: { user: UserInfo | null; loading: boolean; setLoading: React.Dispatch<React.SetStateAction<boolean>> }) {
+function RightGroup({ user, loading, setLoading, pathname }: { user: UserInfo | null; loading: boolean; setLoading: React.Dispatch<React.SetStateAction<boolean>>; pathname: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -144,12 +146,29 @@ function RightGroup({ user, loading, setLoading }: { user: UserInfo | null; load
               </svg>
             </button>
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 const q = searchQuery.trim();
+                console.log('Header search submit', { q, pathname });
                 if (!q) return;
-                // use window navigation to avoid router context issues
-                window.location.href = `/search?q=${encodeURIComponent(q)}&tab=relevance`;
+                const url = `/search?q=${encodeURIComponent(q)}&tab=relevance`;
+                if (pathname && pathname.startsWith('/search')) {
+                  console.log('Header: on /search -> replaceState+dispatch', url);
+                  try { window.history.replaceState({}, '', url); } catch (err) { console.warn(err); }
+                  try { window.dispatchEvent(new CustomEvent('app:search', { detail: { q, tab: 'relevance' } })); } catch (err) { console.warn(err); }
+                } else {
+                  console.log('Header: navigating to /search via router.push', url);
+                  try {
+                    await router.push(url);
+                    console.log('Header: router.push resolved');
+                  } catch (err) {
+                    console.warn('router.push failed, falling back to location.href', err);
+                    window.location.href = url;
+                    return;
+                  }
+                  try { window.dispatchEvent(new CustomEvent('app:search', { detail: { q, tab: 'relevance' } })); } catch (err) { console.warn(err); }
+                }
               }}
               className="flex items-center w-full"
             >

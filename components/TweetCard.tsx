@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { normalizeTweet } from "@/lib/normalizeTweet";
 import Link from "next/link";
 import type { Tweet } from "@/types/tweet";
 
@@ -112,18 +113,20 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
   }
 
   async function handleBookmark() {
-    const endpoint = `/api/proxy/bookmarks`;
+    const id = encodeURIComponent(localTweet.id);
+    const endpoint = `/api/proxy/bookmarks/${id}`;
     const method = (localTweet as any).bookmarkedByCurrentUser ? "DELETE" : "POST";
     try {
       const res = await fetch(endpoint, {
         method,
         credentials: "include",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tweetId: localTweet.id }),
       });
       if (res.ok) {
         const updated = await res.json();
-        setLocalTweet((prev) => ({ ...prev, ...updated }));
+        // normalize backend response so UI fields are consistent
+        const normalized = normalizeTweet(updated ?? {});
+        setLocalTweet((prev) => ({ ...prev, ...normalized }));
       }
     } catch (err) {
       console.error(`[BOOKMARK] error`, err);
@@ -326,23 +329,24 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
                 <span>{localTweet.repliesCount ?? 0}</span>
               </div>
               
-              {/* Bookmark button */}
-              <div className="ml-3 inline-flex items-center">
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); handleBookmark(); }}
-                  title={(localTweet as any).bookmarkedByCurrentUser ? "Quitar marcador" : "Guardar tweet"}
-                  className={`inline-flex items-center gap-2 px-2 py-1 rounded-md transition ${ (localTweet as any).bookmarkedByCurrentUser ? "bg-transparent font-semibold" : "hover:bg-zinc-800/50 dark:hover:bg-zinc-700/50"}`}
-                >
-                  {/* Bookmark icon */}
-                  <svg className={`${(localTweet as any).bookmarkedByCurrentUser ? "h-4 w-4 text-yellow-400" : "h-4 w-4 text-zinc-500 dark:text-zinc-400"}`} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 5v14l7-5 7 5V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z" />
-                  </svg>
-                  <span className={`${(localTweet as any).bookmarkedByCurrentUser ? "font-semibold text-zinc-50" : "text-zinc-400 dark:text-zinc-400"}`}>{(localTweet as any).bookmarksCount ?? 0}</span>
-                </button>
-              </div>
+              {/* Bookmark moved to the right (near date). Render differently when bookmarked */}
             </div>
-            <div className="text-xs text-zinc-400 dark:text-zinc-500">{localTweet.createdAt ? new Date(localTweet.createdAt).toLocaleString() : "Fecha desconocida"}</div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); handleBookmark(); }}
+                title={(localTweet as any).bookmarkedByCurrentUser ? "Quitar marcador" : "Guardar tweet"}
+                className={`inline-flex items-center gap-2 px-2 py-1 rounded-md transition ${ (localTweet as any).bookmarkedByCurrentUser ? "bg-transparent font-semibold" : "hover:bg-zinc-800/50 dark:hover:bg-zinc-700/50"}`}
+              >
+                {/* Bookmark icon: blue when bookmarked, otherwise neutral */}
+                <svg className={`${(localTweet as any).bookmarkedByCurrentUser ? "h-4 w-4 text-blue-500" : "h-4 w-4 text-zinc-500 dark:text-zinc-400"}`} fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 5v14l7-5 7 5V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z" />
+                </svg>
+                {/* No numeric counter for bookmarks — only icon shown */}
+              </button>
+
+              <div className="text-xs text-zinc-400 dark:text-zinc-500">{localTweet.createdAt ? new Date(localTweet.createdAt).toLocaleString() : "Fecha desconocida"}</div>
+            </div>
           </div>
         </div>
       </div>
