@@ -124,9 +124,23 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
       });
       if (res.ok) {
         const updated = await res.json();
-        // normalize backend response so UI fields are consistent
         const normalized = normalizeTweet(updated ?? {});
-        setLocalTweet((prev) => ({ ...prev, ...normalized }));
+        // If backend didn't return bookmark flags, derive them from the method
+        const computed = { ...normalized } as any;
+        if (method === "POST") {
+          if (!computed.bookmarkedByCurrentUser) computed.bookmarkedByCurrentUser = true;
+          if (typeof computed.bookmarksCount !== 'number') computed.bookmarksCount = (localTweet.bookmarksCount ?? 0) + 1;
+        } else if (method === "DELETE") {
+          if (computed.bookmarkedByCurrentUser) computed.bookmarkedByCurrentUser = false;
+          if (typeof computed.bookmarksCount !== 'number') computed.bookmarksCount = Math.max(0, (localTweet.bookmarksCount ?? 1) - 1);
+        }
+        setLocalTweet((prev) => ({ ...prev, ...computed }));
+        try {
+          const ev = new CustomEvent("tweet:updated", { detail: computed });
+          window.dispatchEvent(ev);
+        } catch (e) {
+          // ignore event dispatch errors
+        }
       }
     } catch (err) {
       console.error(`[BOOKMARK] error`, err);
@@ -148,13 +162,13 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
       className={
         isNested
           ? "p-3"
-          : `p-4 ${noBorderTop ? '' : 'border-t border-zinc-800 dark:border-zinc-700'}`
+          : `px-4 py-2 ${noBorderTop ? '' : 'border-t border-zinc-800 dark:border-zinc-700'}`
       }
       onClick={handleShowTweet}
       style={{ cursor: "pointer", backgroundColor: isNested ? undefined : '#0b0b0b' }}
     >
-      <div className="flex items-start gap-3">
-        <div>
+      <div className="flex items-start gap-3 ">
+        <div className="translate-y-2">
           <Link
             href={localTweet.author?.id ? `/profile/${localTweet.author.id}` : "#"}
             onClick={e => e.stopPropagation()}
@@ -174,7 +188,7 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
         </div>
         <div className="flex-1">
 
-          <div className="mt-0.5 mb-1 flex items-center gap-2 text-base text-zinc-700 dark:text-zinc-300" style={{marginTop: '-3px'}}>
+          <div className="mt-1 mb-1 flex items-center gap-2 text-base text-zinc-700 dark:text-zinc-300">
             <Link
               href={localTweet.author?.id ? `/profile/${localTweet.author.id}` : "#"}
               onClick={e => e.stopPropagation()}

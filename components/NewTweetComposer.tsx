@@ -52,7 +52,7 @@ export default function NewTweetComposer({ onTweetCreated }: NewTweetComposerPro
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="What's happening?"
-        className="w-full min-h-[72px] resize-none rounded-md border p-3 text-base text-zinc-900 dark:text-zinc-100 bg-transparent border-zinc-500 dark:border-zinc-500"
+        className="w-full min-h-[72px] resize-none rounded-md border p-3 text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-300 bg-transparent border-zinc-500 dark:border-zinc-400"
       />
       <div className="mt-3 flex items-center justify-end gap-2">
         {error && <div className="text-sm text-red-600 mr-auto">{error}</div>}
