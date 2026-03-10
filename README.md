@@ -95,12 +95,6 @@ npm run lint     # ejecutar ESLint
 - Equilibrar interactividad cliente (actualizaciones optimistas para follow/like/bookmark) con la consistencia eventual del servidor.
 - Implementar scroll infinito y paginación basada en cursor.
 
-## Extensiones sugeridas (opcional)
-
-- Añadir pruebas end-to-end (Cypress / Playwright) y verificación de tipos en CI.
-- Mejorar soporte offline y experiencia PWA.
-- Añadir subida de imágenes (tweets y avatars) con resize en cliente.
-- Implementar features en tiempo real más ricas vía WebSockets para nuevos tweets/notificaciones.
 
 ## Cómo ejecutar localmente
 
