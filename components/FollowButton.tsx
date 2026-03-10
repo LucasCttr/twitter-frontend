@@ -12,7 +12,13 @@ export default function FollowButton({ user, onChange }: { user: any; onChange?:
   const followStatus = user?.followStatus ?? "none";
 
   // status shown by default
-  const statusLabel = isFollowing ? "Following" : followStatus === "requested" ? "Requested" : "Follow";
+  const statusLabel = isFollowing
+    ? "Following"
+    : followStatus === "requested"
+    ? "Requested"
+    : followStatus === "follow_back"
+    ? "Follow back"
+    : "Follow";
   // label shown when hovering (action)
   const actionLabel = isFollowing ? "Unfollow" : followStatus === "requested" ? "Cancel" : "Follow";
 

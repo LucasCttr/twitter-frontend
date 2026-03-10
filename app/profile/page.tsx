@@ -96,7 +96,7 @@ export default function ProfilePage() {
     <>
       <div className="w-full mt-4" style={{ backgroundColor: '#18181b' }}>
         <div className="w-full p-4" style={{ backgroundColor: 'transparent', border: 'none', borderRadius: 0 }}>
-          <ProfileCard profile={profile} />
+          <ProfileCard profile={profile} onSelectTab={(t) => setSelectedTab(t)} />
         </div>
         <div className="flex justify-center mb-4 gap-2 mt-4">
           <button

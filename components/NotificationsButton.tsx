@@ -379,7 +379,28 @@ export default function NotificationsButton() {
                   return (
                   <div key={it.id} className={`p-3 border-b border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 ${it.read ? 'opacity-60' : ''}`} onClick={(e) => { e.stopPropagation(); markReadAndNavigate(it.id, url); setPanelOpen(false); }}>
                   <div className="flex items-start gap-3">
-                    <div className="h-8 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+                    {(() => {
+                      const actor = it.actor ?? ({} as any);
+                      const actorImage = (actor.image ?? actor.profileImage) as string | undefined;
+                      const actorLabel = actor.username ?? actor.handle ?? (actor.email ? actor.email.split("@")[0] : actor.id) ?? '';
+                      const initial = actorLabel ? String(actorLabel).charAt(0).toUpperCase() : 'U';
+                      const provided = Boolean(actorImage && String(actorImage).trim());
+                      const isGenerated = provided && /dicebear|identicon|gravatar|ui-avatars|avatars\.github/i.test(actorImage as string);
+                      if (provided && !isGenerated) {
+                        return (
+                          <img
+                            src={actorImage}
+                            alt={actorLabel || 'avatar'}
+                            className="h-8 w-8 rounded-full object-cover bg-zinc-200 dark:bg-zinc-700"
+                          />
+                        );
+                      }
+                      return (
+                        <div className="h-8 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                          {initial}
+                        </div>
+                      );
+                    })()}
                     <div className="flex-1">
                       <div className="text-sm text-zinc-800 dark:text-zinc-100"><strong>{it.actor?.username ?? it.actor?.email}</strong> <span className="text-xs text-zinc-500">{it.action}</span></div>
                       {it.textPreview && <div className="text-xs text-zinc-500 mt-1">{it.textPreview}</div>}

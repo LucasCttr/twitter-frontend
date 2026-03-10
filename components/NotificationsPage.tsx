@@ -66,7 +66,7 @@ export default function NotificationsPage() {
         <MarkAllReadOnMount />
           <div className="p-4">
             <h1 className="text-2xl font-bold mb-0 text-white text-center">Notifications</h1>
-            {items.length === 0 && !loading && <div className="text-zinc-500">No hay notificaciones.</div>}
+            {items.length === 0 && !loading && <div className="text-zinc-500">No notifications.</div>}
           </div>
           <div className="border-t border-[#262629] divide-y divide-[#262629]">
             {items.map((it) => {

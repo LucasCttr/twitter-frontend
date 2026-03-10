@@ -17,8 +17,8 @@ export async function GET(req: NextRequest) {
   }
 
   // Apply sensible defaults server-side if not provided
-  if (!hasLimit) backendUrl.searchParams.set('limit', '10');
-  if (!hasCountry) backendUrl.searchParams.set('country', 'united-states');
+  if (!hasLimit) backendUrl.searchParams.set('limit', '30');
+  if (!hasCountry) backendUrl.searchParams.set('country', 'argentina');
   if (!hasIncludeCounts) backendUrl.searchParams.set('includeCounts', 'true');
 
   const result = await forwardWithAutoRefresh(req, backendUrl.toString(), { method: 'GET' });

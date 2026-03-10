@@ -29,7 +29,7 @@ export default function BookmarksClient({ initialItems, initialCursor }: { initi
             <div className="p-6 text-center text-sm text-zinc-500">No bookmarks yet</div>
           ) : (
             items.map((t, i) => (
-              <TweetCard key={t.id} tweet={t} onRetweet={() => {}} noBorderTop={i === 0} />
+              <TweetCard key={t.id} tweet={t} onRetweet={() => {}} noBorderTop={i === 0} isLast={i === items.length - 1} />
             ))
           )}
           <div ref={loadMoreRef} />

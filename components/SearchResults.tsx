@@ -94,9 +94,9 @@ export default function SearchResults({ q, initialTab }: { q: string; initialTab
             <div className="border-b border-zinc-800 dark:border-zinc-700 py-0 text-center">
               <h1 className="text-lg font-semibold mt-0 mb-1 text-white mx-auto">Search: "{currentQ}"</h1>
               <div className="flex gap-6 justify-center pt-5">
-                <button className={`pb-2 ${tab === "relevance" ? "border-b-4 border-blue-500 text-blue-600" : "text-zinc-500"}`} onClick={() => changeTab("relevance")}>Destacado</button>
-                <button className={`pb-2 ${tab === "recent" ? "border-b-4 border-blue-500 text-blue-600" : "text-zinc-500"}`} onClick={() => changeTab("recent")}>Más reciente</button>
-                <button className={`pb-2 ${tab === "people" ? "border-b-4 border-blue-500 text-blue-600" : "text-zinc-500"}`} onClick={() => changeTab("people")}>Personas</button>
+                <button className={`pb-2 ${tab === "relevance" ? "border-b-4 border-blue-500 text-blue-600" : "text-zinc-500"}`} onClick={() => changeTab("relevance")}>Relevant</button>
+                <button className={`pb-2 ${tab === "recent" ? "border-b-4 border-blue-500 text-blue-600" : "text-zinc-500"}`} onClick={() => changeTab("recent")}>Recent</button>
+                <button className={`pb-2 ${tab === "people" ? "border-b-4 border-blue-500 text-blue-600" : "text-zinc-500"}`} onClick={() => changeTab("people")}>People</button>
               </div>
             </div>
 
@@ -120,7 +120,7 @@ export default function SearchResults({ q, initialTab }: { q: string; initialTab
                             const target = username ? `/profile/${encodeURIComponent(username)}` : id ? `/profile/${encodeURIComponent(id)}` : undefined;
                             if (target) window.location.href = target;
                           }}
-                          className="p-4 flex items-center gap-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                          className="p-4 flex items-center gap-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900 last:border-b last:border-zinc-800 last:dark:border-zinc-700"
                         >
                           <div className="w-10 h-10 rounded-full bg-zinc-300 dark:bg-zinc-700 flex items-center justify-center text-sm font-medium text-zinc-800 dark:text-zinc-100">{((r.name || r.fullName || r.email || r.username || '?') + '').charAt(0).toString().toUpperCase()}</div>
                           <div className="flex-1">
@@ -142,7 +142,12 @@ export default function SearchResults({ q, initialTab }: { q: string; initialTab
                   ) : (
                     <div>
                       {results.map((r: any, idx: number) => (
-                        <TweetCard key={r.id ?? r._id ?? JSON.stringify(r)} tweet={r} noBorderTop={idx === 0} />
+                        <TweetCard
+                          key={r.id ?? r._id ?? JSON.stringify(r)}
+                          tweet={r}
+                          noBorderTop={idx === 0}
+                          isLast={idx === results.length - 1}
+                        />
                       ))}
                     </div>
                   )}

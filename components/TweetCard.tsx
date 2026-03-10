@@ -13,9 +13,10 @@ type TweetCardProps = {
   onRetweet?: (tweet: Tweet) => void;
   onShow?: (tweet: Tweet) => void;
   noBorderTop?: boolean;
+  isLast?: boolean;
 };
 
-export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorderTop }: TweetCardProps) {
+export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorderTop, isLast }: TweetCardProps) {
     const router = useRouter();
   const [localTweet, setLocalTweet] = useState<Tweet>(tweet);
   const [resolved, setResolved] = useState<Tweet | null | undefined>(tweet.retweetOf ?? undefined);
@@ -162,7 +163,7 @@ export default function TweetCard({ tweet, depth = 0, onRetweet, onShow, noBorde
       className={
         isNested
           ? "p-3"
-          : `px-4 py-2 ${noBorderTop ? '' : 'border-t border-zinc-800 dark:border-zinc-700'}`
+          : `px-4 py-2 ${noBorderTop ? '' : 'border-t border-zinc-800 dark:border-zinc-700'}${isLast ? ' border-b border-zinc-800 dark:border-zinc-700' : ''}`
       }
       onClick={handleShowTweet}
       style={{ cursor: "pointer", backgroundColor: isNested ? undefined : '#0b0b0b' }}
